@@ -4,12 +4,19 @@
     "description": "",
     "scripts": {
         "test": "jest",
-        "test:watch": "jest --watch --verbose"
+        "test:watch": "jest --watch --verbose",
+        "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+        "lint:fix": "pnpm run lint --fix",
+        "prettier": "prettier --check '**/*.{json,yaml,md,ts,tsx,js,jsx}'",
+        "prettier:fix": "prettier --write '**/*.{json,yaml,md,ts,tsx,js,jsx}'"
     },
     "keywords": [],
     "author": "@NaverPayDev/frontend",
     "license": "ISC",
     "devDependencies": {
+        "@naverpay/editorconfig": "^0.0.4",
+        "@naverpay/eslint-config": "^1.0.7",
+        "@naverpay/prettier-config": "^1.0.0",
         "@types/jest": "^29.5.12",
         "jest": "^29.7.0",
         "ts-jest": "^29.2.4",

@@ -1,4 +1,4 @@
-import { echo } from "."
+import {echo} from '.'
 
 describe('@naverpay/nurl', () => {
     it('should work', () => {
