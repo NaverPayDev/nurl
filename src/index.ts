@@ -1,3 +1,1 @@
-export function echo(message: string) {
-    return message
-}
+export {default} from './nurl'
