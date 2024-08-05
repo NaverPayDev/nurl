@@ -39,6 +39,7 @@ export default class NURL implements URL {
             this._password = url.password
             this._searchParams = url.searchParams
         } catch (error) {
+            // eslint-disable-next-line no-console
             console.warn(`Can not parse ${value}`, error)
         }
     }
@@ -108,7 +109,7 @@ export default class NURL implements URL {
             get: (target, prop, receiver) => {
                 const value = Reflect.get(target, prop, receiver)
                 if (typeof value === 'function') {
-                    return (...args: any[]) => {
+                    return (...args: unknown[]) => {
                         const result = value.apply(target, args)
                         this._search = this._searchParams.toString() ? `?${this._searchParams.toString()}` : ''
                         this.updateHref()
