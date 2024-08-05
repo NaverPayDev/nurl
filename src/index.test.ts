@@ -1,6 +1,74 @@
 import NURL from './nurl'
 
 describe('NURL', () => {
+
+    describe('new NURL("")', () => {
+        test('should initialize with empty string', () => {
+            const nurl = new NURL('');
+
+            expect(nurl.href).toBe('');
+            expect(nurl.protocol).toBe('');
+            expect(nurl.host).toBe('');
+            expect(nurl.hostname).toBe('');
+            expect(nurl.port).toBe('');
+            expect(nurl.pathname).toBe('');
+            expect(nurl.search).toBe('');
+            expect(nurl.hash).toBe('');
+            expect(nurl.origin).toBe('');
+            expect(nurl.username).toBe('');
+            expect(nurl.password).toBe('');
+            expect(nurl.searchParams.toString()).toBe('');
+        });
+
+        test('should initialize with undefined', () => {
+            const nurl = new NURL();
+
+            expect(nurl.href).toBe('');
+            expect(nurl.protocol).toBe('');
+            expect(nurl.host).toBe('');
+            expect(nurl.hostname).toBe('');
+            expect(nurl.port).toBe('');
+            expect(nurl.pathname).toBe('');
+            expect(nurl.search).toBe('');
+            expect(nurl.hash).toBe('');
+            expect(nurl.origin).toBe('');
+            expect(nurl.username).toBe('');
+            expect(nurl.password).toBe('');
+            expect(nurl.searchParams.toString()).toBe('');
+        });
+
+        test('should allow setting properties after empty initialization', () => {
+            const nurl = new NURL('');
+
+            nurl.href = 'https://example.com/path?query=value#hash';
+
+            expect(nurl.href).toBe('https://example.com/path?query=value#hash');
+            expect(nurl.protocol).toBe('https:');
+            expect(nurl.host).toBe('example.com');
+            expect(nurl.hostname).toBe('example.com');
+            expect(nurl.pathname).toBe('/path');
+            expect(nurl.search).toBe('?query=value');
+            expect(nurl.hash).toBe('#hash');
+        });
+
+        test('should handle invalid URLs gracefully', () => {
+            const nurl = new NURL('invalid-url');
+
+            expect(nurl.href).toBe('');
+            expect(nurl.protocol).toBe('');
+            expect(nurl.host).toBe('');
+            expect(nurl.hostname).toBe('');
+            expect(nurl.port).toBe('');
+            expect(nurl.pathname).toBe('');
+            expect(nurl.search).toBe('');
+            expect(nurl.hash).toBe('');
+            expect(nurl.origin).toBe('');
+            expect(nurl.username).toBe('');
+            expect(nurl.password).toBe('');
+            expect(nurl.searchParams.toString()).toBe('');
+        });
+    });
+
     describe('new NURL(stringOrURL)', () => {
         test('should create an instance with the same behavior as URL', () => {
             const urlString = 'https://example.com:8080/path/to/page?query=value#hash'
