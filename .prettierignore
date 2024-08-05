@@ -1,0 +1,4 @@
+# pnpm lock yaml 제외
+pnpm-lock.yaml
+
+dist
