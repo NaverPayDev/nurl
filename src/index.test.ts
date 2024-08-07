@@ -155,5 +155,93 @@ describe('NURL', () => {
         })
     })
 
-    describe('new NURL({ baseUrl, pathname, query })', () => {})
+    describe('new NURL({ baseUrl, pathname, query })', () => {
+        test('should create a URL with baseUrl and pathname', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                pathname: '/path',
+            })
+
+            expect(nurl.href).toBe('https://example.com/path')
+            expect(nurl.origin).toBe('https://example.com')
+            expect(nurl.pathname).toBe('/path')
+        })
+
+        test('should add query parameters', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                pathname: '/path',
+                query: {key: 'value', another: 'param'},
+            })
+
+            expect(nurl.href).toBe('https://example.com/path?key=value&another=param')
+            expect(nurl.search).toBe('?key=value&another=param')
+        })
+
+        test('should replace /:id with query parameter', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                pathname: '/users/:id',
+                query: {id: '123'},
+            })
+
+            expect(nurl.href).toBe('https://example.com/users/123')
+            expect(nurl.pathname).toBe('/users/123')
+        })
+
+        test('should replace /[id] with query parameter', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                pathname: '/posts/[id]/comments',
+                query: {id: '456'},
+            })
+
+            expect(nurl.href).toBe('https://example.com/posts/456/comments')
+            expect(nurl.pathname).toBe('/posts/456/comments')
+        })
+
+        test('should handle multiple dynamic segments', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                pathname: '/users/:userId/posts/:postId',
+                query: {userId: '789', postId: '101112'},
+            })
+
+            expect(nurl.href).toBe('https://example.com/users/789/posts/101112')
+            expect(nurl.pathname).toBe('/users/789/posts/101112')
+        })
+
+        test('should keep query parameters not used in pathname', () => {
+            const nurl = new NURL({
+                pathname: '/users/:id',
+                query: {id: '123', sort: 'asc', filter: 'active'},
+            })
+
+            expect(nurl.href).toBe('https://example.com/users/123?sort=asc&filter=active')
+            expect(nurl.pathname).toBe('/users/123')
+            expect(nurl.search).toBe('?sort=asc&filter=active')
+        })
+
+        test('should handle empty query object', () => {
+            const nurl = new NURL({
+                pathname: '/path',
+                query: {},
+            })
+
+            expect(nurl.href).toBe('https://example.com/path')
+            expect(nurl.search).toBe('')
+        })
+
+        test('should throw error if dynamic segment is not provided in query', () => {
+            expect(() => {
+                // 에러 던지는게 맞을까?
+                // eslint-disable-next-line
+                new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/users/:id',
+                    query: {},
+                })
+            }).toThrow('Missing query parameter for dynamic segment: id')
+        })
+    })
 })
