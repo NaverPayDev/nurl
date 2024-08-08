@@ -21,6 +21,9 @@ function extractPathKey(path: string): string {
 export function refinePathnameWithQuery(pathname: string, query: Record<string, string>): string {
     return getDynamicPaths(pathname).reduce((acc, path) => {
         const pathKey = extractPathKey(path)
+        if (!query[pathKey]) {
+            throw new Error(`Missing query parameter for dynamic segment: ${pathKey}`)
+        }
         return acc.replace(path, query[pathKey])
     }, pathname)
 }
