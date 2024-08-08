@@ -242,6 +242,8 @@ describe('NURL', () => {
                     query: {},
                 })
             }).toThrow('Missing query parameter for dynamic segment: id')
+        })
+    })
 
     describe('NURL.canParse', () => {
         test.each([
