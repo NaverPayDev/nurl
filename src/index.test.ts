@@ -242,6 +242,25 @@ describe('NURL', () => {
                     query: {},
                 })
             }).toThrow('Missing query parameter for dynamic segment: id')
+
+    describe('NURL.canParse', () => {
+        test.each([
+            ['https://example.com', true],
+            ['https://example.com/path?query=value#hash', true],
+            ['http://localhost:3000', true],
+            ['ftp://ftp.example.com', true],
+            ['mailto:user@example.com', true],
+            ['/path/to/resource', true],
+            ['/path/to/resource?query=value', true],
+            ['/path/to/resource#hash', true],
+            ['example.com', true],
+            ['example.com/path', true],
+            ['subdomain.example.com/path?query=value#hash', true],
+            ['invalid-url', false],
+            ['http://', false],
+            ['', false],
+        ])('should return %p for %s', (input, expected) => {
+            expect(NURL.canParse(input)).toBe(expected)
         })
     })
 })

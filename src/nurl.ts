@@ -63,6 +63,22 @@ export default class NURL implements URL {
         }
     }
 
+    static canParse(input: string): boolean {
+        if (input.startsWith('/')) {
+            return /^\/[^?#]*(\?[^#]*)?(#.*)?$/.test(input)
+        }
+
+        try {
+            // eslint-disable-next-line no-new
+            new URL(input)
+            return true
+        } catch {
+            // URL 생성자로 파싱할 수 없는 경우, 추가적인 검사를 수행
+            // 예: 'example.com' 또는 'example.com/path'와 같은 형식 허용
+            return /^[^:/?#]+(\.[^:/?#]+)+(\/[^?#]*(\?[^#]*)?(#.*)?)?$/.test(input)
+        }
+    }
+
     get baseUrl(): string {
         return this._baseUrl
     }
