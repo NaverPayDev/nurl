@@ -1,3 +1,8 @@
+interface URLOptions extends Partial<URL> {
+    baseUrl?: string
+    query?: Record<string, string>
+}
+
 export default class NURL implements URL {
     private _href: string = ''
     private _protocol: string = ''
@@ -10,7 +15,53 @@ export default class NURL implements URL {
     private _origin: string = ''
     private _username: string = ''
     private _password: string = ''
+    private _baseUrl: string = ''
     private _searchParams: URLSearchParams = new URLSearchParams()
+
+    constructor(input?: string | URL | URLOptions) {
+        this._searchParams = new URLSearchParams()
+        if (typeof input === 'string' || input instanceof URL) {
+            this.href = input.toString()
+        } else if (input) {
+            if (input.baseUrl) {
+                this.baseUrl = input.baseUrl
+            }
+            if (input.href) {
+                this.href = input.href
+            }
+            if (input.protocol) {
+                this.protocol = input.protocol
+            }
+            if (input.host) {
+                this.host = input.host
+            }
+            if (input.hostname) {
+                this.hostname = input.hostname
+            }
+            if (input.port) {
+                this.port = input.port
+            }
+            if (input.pathname) {
+                this.pathname = input.pathname
+            }
+            if (input.search) {
+                this.search = input.search
+            }
+            if (input.hash) {
+                this.hash = input.hash
+            }
+            if (input.username) {
+                this.username = input.username
+            }
+            if (input.password) {
+                this.password = input.password
+            }
+            if (input.query) {
+                this.search = new URLSearchParams(input.query).toString()
+            }
+            this.updateHref()
+        }
+    }
 
     static canParse(input: string): boolean {
         if (input.startsWith('/')) {
@@ -28,10 +79,35 @@ export default class NURL implements URL {
         }
     }
 
-    constructor(url?: string | URL) {
-        this._searchParams = new URLSearchParams()
-        if (url) {
-            this.href = url.toString()
+    get baseUrl(): string {
+        return this._baseUrl
+    }
+
+    set baseUrl(value: string) {
+        this._baseUrl = value
+        try {
+            const url = new URL(value)
+            this._protocol = url.protocol
+            this._host = url.host
+            this._hostname = url.hostname
+            this._port = url.port
+            this._origin = url.origin
+            this._username = url.username
+            this._password = url.password
+            if (url.pathname !== '/') {
+                this._pathname = url.pathname
+            }
+            if (url.search) {
+                this._search = url.search
+                this._searchParams = new URLSearchParams(url.search)
+            }
+            if (url.hash) {
+                this._hash = url.hash
+            }
+            this.updateHref()
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.warn(`Invalid baseUrl: ${value}`, error)
         }
     }
 
@@ -169,10 +245,22 @@ export default class NURL implements URL {
     }
 
     private updateHref() {
-        this._href = `${this._protocol}//${this._username}${this._password ? ':' + this._password : ''}${
-            this._username || this._password ? '@' : ''
-        }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname}${this._search}${this._hash}`
-        this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
+        if (this._baseUrl) {
+            const baseUrl = new URL(this._baseUrl)
+            baseUrl.pathname = this._pathname
+            baseUrl.search = this._search
+            baseUrl.hash = this._hash
+            this._href = baseUrl.href
+            this._origin = baseUrl.origin
+        } else {
+            this._href = `${this._protocol}//${this._username}${this._password ? ':' + this._password : ''}${
+                this._username || this._password ? '@' : ''
+            }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname}${this._search}${this._hash}`
+
+            if (!this._origin) {
+                this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
+            }
+        }
     }
 
     toString(): string {
