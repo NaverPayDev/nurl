@@ -213,7 +213,6 @@ describe('NURL', () => {
 
         test('should keep query parameters not used in pathname', () => {
             const nurl = new NURL({
-                baseUrl: 'https://example.com',
                 pathname: '/users/:id',
                 query: {id: '123', sort: 'asc', filter: 'active'},
             })
@@ -225,7 +224,6 @@ describe('NURL', () => {
 
         test('should handle empty query object', () => {
             const nurl = new NURL({
-                baseUrl: 'https://example.com',
                 pathname: '/path',
                 query: {},
             })
