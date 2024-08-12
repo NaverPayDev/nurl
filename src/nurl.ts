@@ -258,7 +258,7 @@ export default class NURL implements URL {
             this._href = baseUrl.href
             this._origin = baseUrl.origin
         } else {
-            this._href = `${this._protocol}//${this._username}${this._password ? ':' + this._password : ''}${
+            this._href = `${this._protocol}${this._protocol && '//'}${this._username}${this._password ? ':' + this._password : ''}${
                 this._username || this._password ? '@' : ''
             }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname}${this._search}${this._hash}`
 
