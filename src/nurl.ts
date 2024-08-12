@@ -1,3 +1,5 @@
+import {refinePathnameWithQuery, refineQueryWithPathname} from './utils'
+
 interface URLOptions extends Partial<URL> {
     baseUrl?: string
     query?: Record<string, string>
@@ -42,7 +44,7 @@ export default class NURL implements URL {
                 this.port = input.port
             }
             if (input.pathname) {
-                this.pathname = input.pathname
+                this.pathname = refinePathnameWithQuery(input.pathname, input.query ?? {})
             }
             if (input.search) {
                 this.search = input.search
@@ -57,7 +59,10 @@ export default class NURL implements URL {
                 this.password = input.password
             }
             if (input.query) {
-                this.search = new URLSearchParams(input.query).toString()
+                const refinedQuery = refineQueryWithPathname(input.pathname ?? '', input.query)
+                if (Object.keys(refinedQuery).length > 0) {
+                    this.search = new URLSearchParams(refinedQuery).toString()
+                }
             }
             this.updateHref()
         }
@@ -253,7 +258,7 @@ export default class NURL implements URL {
             this._href = baseUrl.href
             this._origin = baseUrl.origin
         } else {
-            this._href = `${this._protocol}//${this._username}${this._password ? ':' + this._password : ''}${
+            this._href = `${this._protocol}${this._protocol && '//'}${this._username}${this._password ? ':' + this._password : ''}${
                 this._username || this._password ? '@' : ''
             }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname}${this._search}${this._hash}`
 
