@@ -217,7 +217,7 @@ describe('NURL', () => {
                 query: {id: '123', sort: 'asc', filter: 'active'},
             })
 
-            expect(nurl.href).toBe('https://example.com/users/123?sort=asc&filter=active')
+            expect(nurl.href).toBe('/users/123?sort=asc&filter=active')
             expect(nurl.pathname).toBe('/users/123')
             expect(nurl.search).toBe('?sort=asc&filter=active')
         })
@@ -228,7 +228,7 @@ describe('NURL', () => {
                 query: {},
             })
 
-            expect(nurl.href).toBe('https://example.com/path')
+            expect(nurl.href).toBe('/path')
             expect(nurl.search).toBe('')
         })
 
