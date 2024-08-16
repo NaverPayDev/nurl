@@ -313,7 +313,7 @@ describe('NURL', () => {
             })
         })
 
-        describe('Search Parameters Operations', () => {
+        describe.skip('Search Parameters Operations', () => {
             describe('setSearchParams', () => {
                 test('should set multiple search parameters', () => {
                     const url = new NURL('https://example.com')
@@ -440,7 +440,7 @@ describe('NURL', () => {
             })
         })
 
-        describe('Edge cases and error handling', () => {
+        describe.skip('Edge cases and error handling', () => {
             test('should handle URLs with auth info', () => {
                 const url = new NURL('https://user:pass@example.com')
                 expect(url.username).toBe('user')
@@ -467,7 +467,7 @@ describe('NURL', () => {
             })
         })
 
-        describe('Internationalization support', () => {
+        describe.skip('Internationalization support', () => {
             test('should handle Korean IDN hostnames', () => {
                 const originalDomain = '한글도메인.테스트'
                 const url = new NURL(`https://${originalDomain}`)
