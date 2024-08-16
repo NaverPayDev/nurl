@@ -201,6 +201,18 @@ export default class NURL implements URL {
         this.updateHref()
     }
 
+    setSearchParams(_params: Record<string, string>): void {
+        // TODO
+    }
+
+    appendSearchParams(_params: Record<string, string>): void {
+        // TODO
+    }
+
+    removeSearchParam(..._keys: string[]): void {
+        // TODO
+    }
+
     get searchParams(): URLSearchParams {
         return new Proxy(this._searchParams, {
             get: (target, prop, receiver) => {
@@ -274,5 +286,17 @@ export default class NURL implements URL {
 
     toJSON(): string {
         return this._href
+    }
+
+    // eslint-disable-next-line
+    get decodedIDN(): string {
+        // TODO
+        return ''
+    }
+
+    // eslint-disable-next-line
+    get decodedHostname(): string {
+        // TODO
+        return ''
     }
 }
