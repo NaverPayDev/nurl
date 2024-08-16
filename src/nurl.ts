@@ -288,12 +288,14 @@ export default class NURL implements URL {
         return this._href
     }
 
-    decodePunycode(): string {
+    // eslint-disable-next-line
+    get decodedIDN(): string {
         // TODO
         return ''
     }
 
-    decodeHostname(): string {
+    // eslint-disable-next-line
+    get decodedHostname(): string {
         // TODO
         return ''
     }

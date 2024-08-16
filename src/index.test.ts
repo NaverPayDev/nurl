@@ -474,7 +474,7 @@ describe('NURL', () => {
                 expect(url.href.includes('xn--')).toBe(true)
                 expect(url.hostname).not.toBe(originalDomain)
                 expect(url.hostname.startsWith('xn--')).toBe(true)
-                expect(url.decodeHostname()).toBe(originalDomain)
+                expect(url.decodedHostname).toBe(originalDomain)
             })
 
             test('should handle Korean characters in pathname and search', () => {
@@ -498,12 +498,12 @@ describe('NURL', () => {
                 const originalURL = 'https://사용자:비밀번호@한글주소.한국/경로/테스트?키=값#부분'
                 const url = new NURL(originalURL)
                 expect(url.href).not.toBe(originalURL)
-                expect(decodeURIComponent(url.decodePunycode())).toBe(originalURL)
+                expect(decodeURIComponent(url.decodedIDN)).toBe(originalURL)
                 expect(decodeURIComponent(url.username)).toBe('사용자')
                 expect(decodeURIComponent(url.password)).toBe('비밀번호')
                 expect(url.hostname).not.toBe('한글주소.한국')
                 expect(url.hostname.startsWith('xn--')).toBe(true)
-                expect(url.decodeHostname()).toBe('한글주소.한국')
+                expect(url.decodedHostname).toBe('한글주소.한국')
                 expect(decodeURIComponent(url.pathname)).toBe('/경로/테스트')
                 expect(decodeURIComponent(url.search)).toBe('?키=값')
                 expect(decodeURIComponent(url.hash)).toBe('#부분')
