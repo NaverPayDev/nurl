@@ -22,9 +22,5 @@
         "ts-jest": "^29.2.4",
         "typescript": "^5.5.4"
     },
-    "packageManager": "pnpm@9.1.1",
-    "engines": {
-        "node": "20.13.1",
-        "pnpm": "9.1.1"
-    }
+    "packageManager": "pnpm@9.1.1"
 }
