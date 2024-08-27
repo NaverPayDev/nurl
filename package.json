@@ -2,6 +2,24 @@
     "name": "@naverpay/nurl",
     "version": "0.0.1",
     "description": "",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/module/index.js",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/esm/index.d.mts",
+                "default": "./dist/esm/index.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/index.d.ts",
+                "default": "./dist/cjs/index.js"
+            }
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "clean": "rm -rf dist",
         "build": "pnpm clean && pnpm build-declarations && rollup -c",
