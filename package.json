@@ -20,6 +20,7 @@
     "files": [
         "dist"
     ],
+    "sideEffects": false,
     "scripts": {
         "clean": "rm -rf dist",
         "build": "pnpm clean && pnpm build-declarations && rollup -c",
