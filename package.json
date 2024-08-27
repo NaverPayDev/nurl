@@ -37,6 +37,9 @@
     "keywords": [],
     "author": "@NaverPayDev/frontend",
     "license": "ISC",
+    "dependencies": {
+        "core-js": "^3.38.1"
+    },
     "devDependencies": {
         "@naverpay/editorconfig": "^0.0.4",
         "@naverpay/eslint-config": "^1.0.7",
