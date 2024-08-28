@@ -16,7 +16,7 @@ jobs:
             - name: Enable Corepack
               run: corepack enable
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
             - run: pnpm run prettier
             - run: pnpm run lint
 
@@ -31,7 +31,7 @@ jobs:
             - name: Enable Corepack
               run: corepack enable
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
             - run: pnpm run test
 
     build:
@@ -45,5 +45,5 @@ jobs:
             - name: Enable Corepack
               run: corepack enable
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
             - run: pnpm run build
