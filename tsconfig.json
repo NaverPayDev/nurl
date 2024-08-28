@@ -1,11 +1,9 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "esnext",
-        "jsx": "react-jsx",
-        "lib": ["dom", "es2017"],
-        "baseUrl": "src",
-        "moduleResolution": "node",
+        "target": "ES6",
+        "module": "ESNext",
+        "lib": ["DOM", "ES6"],
+        "moduleResolution": "Node",
         "strict": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
@@ -16,7 +14,6 @@
         "removeComments": false,
         "preserveConstEnums": true,
         "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true,
         "declaration": true
     },
     "include": ["./src/**/*.ts"],
