@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "ES6",
+        "target": "ES2021",
         "module": "ESNext",
-        "lib": ["DOM", "ES6"],
+        "lib": ["DOM", "ES2021"],
         "moduleResolution": "Node",
         "strict": true,
         "allowSyntheticDefaultImports": true,
