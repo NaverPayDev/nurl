@@ -384,7 +384,7 @@ describe('NURL', () => {
                 })
             })
 
-            describe.skip('removeSearchParam', () => {
+            describe('removeSearchParam', () => {
                 test('should remove specified search parameter', () => {
                     const url = new NURL('https://example.com?key1=value1&key2=value2')
                     url.removeSearchParam('key1')

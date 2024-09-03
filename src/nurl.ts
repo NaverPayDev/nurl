@@ -222,7 +222,15 @@ export default class NURL implements URL {
     }
 
     removeSearchParam(..._keys: string[]): void {
-        // TODO
+        const searchParams = new URLSearchParams(this._searchParams)
+
+        _keys.forEach((key) => {
+            searchParams.delete(key)
+        })
+
+        this._search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+        this._searchParams = searchParams
+        this.updateHref()
     }
 
     get searchParams(): URLSearchParams {
