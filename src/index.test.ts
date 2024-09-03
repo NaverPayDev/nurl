@@ -313,7 +313,7 @@ describe('NURL', () => {
             })
         })
 
-        describe.skip('Search Parameters Operations', () => {
+        describe('Search Parameters Operations', () => {
             describe('setSearchParams', () => {
                 test('should set multiple search parameters', () => {
                     const url = new NURL('https://example.com')
@@ -346,7 +346,7 @@ describe('NURL', () => {
                 })
             })
 
-            describe('appendSearchParams', () => {
+            describe.skip('appendSearchParams', () => {
                 test('should add new search parameters', () => {
                     const url = new NURL('https://example.com?existing=value')
                     url.appendSearchParams({new: 'param'})
@@ -384,7 +384,7 @@ describe('NURL', () => {
                 })
             })
 
-            describe('removeSearchParam', () => {
+            describe.skip('removeSearchParam', () => {
                 test('should remove specified search parameter', () => {
                     const url = new NURL('https://example.com?key1=value1&key2=value2')
                     url.removeSearchParam('key1')
@@ -418,7 +418,7 @@ describe('NURL', () => {
                 })
             })
 
-            describe('Complex scenarios', () => {
+            describe.skip('Complex scenarios', () => {
                 test('should handle a series of operations', () => {
                     const url = new NURL('https://example.com')
                     url.setSearchParams({initial: 'value'})

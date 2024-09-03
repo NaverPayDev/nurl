@@ -202,7 +202,11 @@ export default class NURL implements URL {
     }
 
     setSearchParams(_params: Record<string, string>): void {
-        // TODO
+        const searchParams = new URLSearchParams(_params)
+
+        this._search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+        this._searchParams = searchParams
+        this.updateHref()
     }
 
     appendSearchParams(_params: Record<string, string>): void {
