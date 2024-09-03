@@ -467,7 +467,7 @@ describe('NURL', () => {
             })
         })
 
-        describe.skip('Internationalization support', () => {
+        describe('Internationalization support', () => {
             test('should handle Korean IDN hostnames', () => {
                 const originalDomain = '한글도메인.테스트'
                 const url = new NURL(`https://${originalDomain}`)

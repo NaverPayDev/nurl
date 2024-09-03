@@ -1,3 +1,5 @@
+import {decode} from 'punycode/'
+
 import {refinePathnameWithQuery, refineQueryWithPathname} from './utils'
 
 interface URLOptions extends Partial<URL> {
@@ -308,15 +310,22 @@ export default class NURL implements URL {
         return this._href
     }
 
-    // eslint-disable-next-line
+    punycodePrefix = 'xn--'
+
     get decodedIDN(): string {
-        // TODO
-        return ''
+        let href = this._href
+
+        this._hostname.split('.').forEach((segment) => {
+            href = href.replace(segment, decode(segment.replace(this.punycodePrefix, '')))
+        })
+
+        return href
     }
 
-    // eslint-disable-next-line
     get decodedHostname(): string {
-        // TODO
-        return ''
+        return this._hostname
+            .split('.')
+            .map((segment) => decode(segment.replace(this.punycodePrefix, '')))
+            .join('.')
     }
 }
