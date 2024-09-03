@@ -346,7 +346,7 @@ describe('NURL', () => {
                 })
             })
 
-            describe.skip('appendSearchParams', () => {
+            describe('appendSearchParams', () => {
                 test('should add new search parameters', () => {
                     const url = new NURL('https://example.com?existing=value')
                     url.appendSearchParams({new: 'param'})
