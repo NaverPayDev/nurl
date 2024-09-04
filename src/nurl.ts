@@ -1,3 +1,12 @@
+/**
+ * Note: The trailing slash in the import path 'punycode/' is intentional.
+ * It ensures that this third-party module is used instead of the built-in
+ * Node.js 'punycode' module, which has been deprecated since Node.js v7.0.0.
+ * @see https://github.com/mathiasbynens/punycode.js#installation
+ * @see https://nodejs.org/api/punycode.html for deprecation info
+ */
+import {decode} from 'punycode/'
+
 import {refinePathnameWithQuery, refineQueryWithPathname} from './utils'
 
 interface URLOptions extends Partial<URL> {
@@ -308,15 +317,22 @@ export default class NURL implements URL {
         return this._href
     }
 
-    // eslint-disable-next-line
+    punycodePrefix = 'xn--'
+
     get decodedIDN(): string {
-        // TODO
-        return ''
+        let href = this._href
+
+        this._hostname.split('.').forEach((segment) => {
+            href = href.replace(segment, decode(segment.replace(this.punycodePrefix, '')))
+        })
+
+        return href
     }
 
-    // eslint-disable-next-line
     get decodedHostname(): string {
-        // TODO
-        return ''
+        return this._hostname
+            .split('.')
+            .map((segment) => decode(segment.replace(this.punycodePrefix, '')))
+            .join('.')
     }
 }
