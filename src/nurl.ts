@@ -77,6 +77,10 @@ export default class NURL implements URL {
         }
     }
 
+    static create(input?: string | URL | URLOptions) {
+        return new NURL(input)
+    }
+
     static canParse(input: string): boolean {
         if (input.startsWith('/')) {
             return /^\/[^?#]*(\?[^#]*)?(#.*)?$/.test(input)
