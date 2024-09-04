@@ -230,7 +230,7 @@ export default class NURL implements URL {
         this.updateHref()
     }
 
-    removeSearchParam(..._keys: string[]): void {
+    removeSearchParams(..._keys: string[]): void {
         const searchParams = new URLSearchParams(this._searchParams)
 
         _keys.forEach((key) => {

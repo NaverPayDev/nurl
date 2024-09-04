@@ -386,28 +386,28 @@ describe('NURL', () => {
                 })
             })
 
-            describe('removeSearchParam', () => {
+            describe('removeSearchParams', () => {
                 test('should remove specified search parameter', () => {
                     const url = new NURL('https://example.com?key1=value1&key2=value2')
-                    url.removeSearchParam('key1')
+                    url.removeSearchParams('key1')
                     expect(url.search).toBe('?key2=value2')
                 })
 
                 test('should handle non-existent parameter', () => {
                     const url = new NURL('https://example.com?existing=value')
-                    url.removeSearchParam('nonexistent')
+                    url.removeSearchParams('nonexistent')
                     expect(url.search).toBe('?existing=value')
                 })
 
                 test('should handle multiple parameters', () => {
                     const url = new NURL('https://example.com?key1=value1&key2=value2&key3=value3')
-                    url.removeSearchParam('key1', 'key3')
+                    url.removeSearchParams('key1', 'key3')
                     expect(url.search).toBe('?key2=value2')
                 })
 
                 test('should handle all parameters removal', () => {
                     const url = new NURL('https://example.com?key1=value1&key2=value2')
-                    url.removeSearchParam('key1', 'key2')
+                    url.removeSearchParams('key1', 'key2')
                     expect(url.search).toBe('')
                 })
 
@@ -415,7 +415,7 @@ describe('NURL', () => {
                     const url = new NURL(
                         'https://example.com?existing=value&%ED%95%9C%EA%B8%80%ED%82%A4=%ED%95%9C%EA%B8%80%EA%B0%92',
                     )
-                    url.removeSearchParam('한글키')
+                    url.removeSearchParams('한글키')
                     expect(url.search).toBe('?existing=value')
                 })
             })
@@ -425,7 +425,7 @@ describe('NURL', () => {
                     const url = new NURL('https://example.com')
                     url.setSearchParams({initial: 'value'})
                     url.appendSearchParams({added: 'later'})
-                    url.removeSearchParam('initial')
+                    url.removeSearchParams('initial')
                     url.appendSearchParams({'new=param': 'complex&value'})
                     expect(url.search).toBe('?added=later&new%3Dparam=complex%26value')
                 })
@@ -434,7 +434,7 @@ describe('NURL', () => {
                     const url = new NURL('https://example.com')
                     url.setSearchParams({키1: '값1', 키2: '값2'})
                     url.appendSearchParams({키3: '값3'})
-                    url.removeSearchParam('키2')
+                    url.removeSearchParams('키2')
                     expect(url.searchParams.get('키1')).toBe('값1')
                     expect(url.searchParams.has('키2')).toBe(false)
                     expect(url.searchParams.get('키3')).toBe('값3')
