@@ -2,3 +2,6 @@
 pnpm-lock.yaml
 
 dist
+
+# markdownlint
+**/*.md
