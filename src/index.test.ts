@@ -1,3 +1,5 @@
+import {describe, test, expect} from 'vitest'
+
 import NURL from './nurl'
 
 describe('NURL', () => {
