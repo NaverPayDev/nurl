@@ -313,7 +313,7 @@ describe('NURL', () => {
             })
         })
 
-        describe.skip('Search Parameters Operations', () => {
+        describe('Search Parameters Operations', () => {
             describe('setSearchParams', () => {
                 test('should set multiple search parameters', () => {
                     const url = new NURL('https://example.com')
@@ -440,7 +440,7 @@ describe('NURL', () => {
             })
         })
 
-        describe.skip('Edge cases and error handling', () => {
+        describe('Edge cases and error handling', () => {
             test('should handle URLs with auth info', () => {
                 const url = new NURL('https://user:pass@example.com')
                 expect(url.username).toBe('user')

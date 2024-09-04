@@ -202,15 +202,35 @@ export default class NURL implements URL {
     }
 
     setSearchParams(_params: Record<string, string>): void {
-        // TODO
+        const searchParams = new URLSearchParams(_params)
+
+        this._search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+        this._searchParams = searchParams
+        this.updateHref()
     }
 
     appendSearchParams(_params: Record<string, string>): void {
-        // TODO
+        const searchParams = new URLSearchParams(this._searchParams)
+
+        Object.keys(_params).forEach((key) => {
+            searchParams.append(key, _params[key])
+        })
+
+        this._search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+        this._searchParams = searchParams
+        this.updateHref()
     }
 
     removeSearchParam(..._keys: string[]): void {
-        // TODO
+        const searchParams = new URLSearchParams(this._searchParams)
+
+        _keys.forEach((key) => {
+            searchParams.delete(key)
+        })
+
+        this._search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+        this._searchParams = searchParams
+        this.updateHref()
     }
 
     get searchParams(): URLSearchParams {
