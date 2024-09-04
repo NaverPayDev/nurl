@@ -32,15 +32,21 @@
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
         "lint:fix": "pnpm run lint --fix",
         "prettier": "prettier --check '**/*.{json,yaml,md,ts,tsx,js,jsx}'",
-        "prettier:fix": "prettier --write '**/*.{json,yaml,md,ts,tsx,js,jsx}'"
+        "prettier:fix": "prettier --write '**/*.{json,yaml,md,ts,tsx,js,jsx}'",
+        "release": "changeset publish"
     },
     "keywords": [],
     "author": "@NaverPayDev/frontend",
-    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NaverPayDev/nurl.git"
+    },
+    "license": "MIT",
     "dependencies": {
         "core-js": "^3.38.1"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.27.7",
         "@naverpay/editorconfig": "^0.0.4",
         "@naverpay/eslint-config": "^1.0.7",
         "@naverpay/prettier-config": "^1.0.0",
