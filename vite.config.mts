@@ -9,7 +9,7 @@ export default defineConfig({
         babel({
             babelHelpers: 'runtime',
             plugins: [['@babel/plugin-transform-runtime', {corejs: {version: 3, proposals: true}}]],
-            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            extensions: ['.js', '.ts'],
             exclude: 'node_modules/**',
         }),
     ],
