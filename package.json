@@ -59,7 +59,6 @@
         "@rollup/plugin-babel": "^6.0.4",
         "@types/punycode": "^2.1.4",
         "browserslist-to-esbuild": "^2.1.1",
-        "rollup": "^4.20.0",
         "tsup": "^8.2.4",
         "typescript": "^5.5.4",
         "vite": "^5.4.3",
