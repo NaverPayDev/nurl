@@ -317,6 +317,18 @@ describe('NURL', () => {
                 expect(url.searchParams.get('key1')).toBe('value1')
                 expect(url.searchParams.get('key2')).toBe('value2')
             })
+
+            test('should accept pathname with dynamic segments', () => {
+                const url = new NURL('https://example.com')
+                url.pathname = '/user/[id]'
+                expect(url.href).toBe('https://example.com/user/[id]')
+            })
+
+            test('[id] should not be replaced when same parameter is in search', () => {
+                const url = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]'})
+                url.search = '?id=3'
+                expect(url.href).toBe('https://example.com/users/[id]?id=3')
+            })
         })
 
         describe('Search Parameters Operations', () => {
