@@ -235,15 +235,9 @@ describe('NURL', () => {
                 expect(nurl.search).toBe('')
             })
 
-            test('should throw error if dynamic segment is not provided in query', () => {
-                expect(() => {
-                    // eslint-disable-next-line no-new
-                    new NURL({
-                        baseUrl: 'https://example.com',
-                        pathname: '/users/:id',
-                        query: {},
-                    })
-                }).toThrow('Missing query parameter for dynamic segment: id')
+            test('should work even without a dynamic segment provided', () => {
+                const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/:id', query: {}})
+                expect(nurl.href).toBe('https://example.com/users/:id')
             })
         })
     })
