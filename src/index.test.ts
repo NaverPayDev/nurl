@@ -388,6 +388,12 @@ describe('NURL', () => {
                     url.appendSearchParams({한글키: '한글값'})
                     expect(url.search).toBe('?existing=value&%ED%95%9C%EA%B8%80%ED%82%A4=%ED%95%9C%EA%B8%80%EA%B0%92')
                 })
+
+                test('should replace dynamic segment with appendSearchParams', () => {
+                    const url = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]'})
+                    url.appendSearchParams({id: '3'})
+                    expect(url.pathname).toBe('/users/3')
+                })
             })
 
             describe('removeSearchParams', () => {
