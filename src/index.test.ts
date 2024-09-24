@@ -235,9 +235,14 @@ describe('NURL', () => {
                 expect(nurl.search).toBe('')
             })
 
-            test('should work even without a dynamic segment provided', () => {
+            test(':id should not be replaced when the query parameter is missing', () => {
                 const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/:id', query: {}})
                 expect(nurl.href).toBe('https://example.com/users/:id')
+            })
+
+            test('[id] should not be replaced when the query parameter is missing', () => {
+                const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', query: {}})
+                expect(nurl.href).toBe('https://example.com/users/[id]')
             })
         })
     })
