@@ -244,6 +244,11 @@ describe('NURL', () => {
                 const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', query: {}})
                 expect(nurl.href).toBe('https://example.com/users/[id]')
             })
+
+            test('[id] should not be replaced when same parameter is in search', () => {
+                const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', search: '?id=3'})
+                expect(nurl.href).toBe('https://example.com/users/[id]?id=3')
+            })
         })
     })
 
