@@ -235,15 +235,19 @@ describe('NURL', () => {
                 expect(nurl.search).toBe('')
             })
 
-            test('should throw error if dynamic segment is not provided in query', () => {
-                expect(() => {
-                    // eslint-disable-next-line no-new
-                    new NURL({
-                        baseUrl: 'https://example.com',
-                        pathname: '/users/:id',
-                        query: {},
-                    })
-                }).toThrow('Missing query parameter for dynamic segment: id')
+            test(':id should not be replaced when the query parameter is missing', () => {
+                const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/:id', query: {}})
+                expect(nurl.href).toBe('https://example.com/users/:id')
+            })
+
+            test('[id] should not be replaced when the query parameter is missing', () => {
+                const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', query: {}})
+                expect(nurl.href).toBe('https://example.com/users/[id]')
+            })
+
+            test('[id] should not be replaced when same parameter is in search', () => {
+                const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', search: '?id=3'})
+                expect(nurl.href).toBe('https://example.com/users/[id]?id=3')
             })
         })
     })
@@ -312,6 +316,18 @@ describe('NURL', () => {
                 url.search = 'key1=value1&key2=value2'
                 expect(url.searchParams.get('key1')).toBe('value1')
                 expect(url.searchParams.get('key2')).toBe('value2')
+            })
+
+            test('should accept pathname with dynamic segments', () => {
+                const url = new NURL('https://example.com')
+                url.pathname = '/user/[id]'
+                expect(url.href).toBe('https://example.com/user/[id]')
+            })
+
+            test('[id] should not be replaced when same parameter is in search', () => {
+                const url = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]'})
+                url.search = '?id=3'
+                expect(url.href).toBe('https://example.com/users/[id]?id=3')
             })
         })
 
@@ -383,6 +399,12 @@ describe('NURL', () => {
                     const url = new NURL('https://example.com?existing=value')
                     url.appendSearchParams({한글키: '한글값'})
                     expect(url.search).toBe('?existing=value&%ED%95%9C%EA%B8%80%ED%82%A4=%ED%95%9C%EA%B8%80%EA%B0%92')
+                })
+
+                test('should replace dynamic segment with appendSearchParams', () => {
+                    const url = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]'})
+                    url.appendSearchParams({id: '3'})
+                    expect(url.pathname).toBe('/users/3')
                 })
             })
 

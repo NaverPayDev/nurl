@@ -7,7 +7,7 @@
  */
 import {decode} from 'punycode/'
 
-import {refinePathnameWithQuery, refineQueryWithPathname} from './utils'
+import {extractPathKey, getDynamicPaths, refinePathnameWithQuery, refineQueryWithPathname} from './utils'
 
 interface URLOptions extends Partial<URL> {
     baseUrl?: string
@@ -224,9 +224,14 @@ export default class NURL implements URL {
 
     appendSearchParams(_params: Record<string, string>): void {
         const searchParams = new URLSearchParams(this._searchParams)
+        const dynamicRoutes = getDynamicPaths(this._pathname).map(extractPathKey)
 
         Object.keys(_params).forEach((key) => {
-            searchParams.append(key, _params[key])
+            if (dynamicRoutes.includes(key)) {
+                this._pathname = refinePathnameWithQuery(this._pathname, {[key]: _params[key]})
+            } else {
+                searchParams.append(key, _params[key])
+            }
         })
 
         this._search = searchParams.toString() ? `?${searchParams.toString()}` : ''

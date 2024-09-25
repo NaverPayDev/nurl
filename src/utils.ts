@@ -1,14 +1,14 @@
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
 
-function getDynamicPaths(pathname: string): string[] {
+export function getDynamicPaths(pathname: string): string[] {
     return pathname
         .split('/')
         .map((path) => (DYNAMIC_PATH_COLON_REGEXP.test(path) || DYNAMIC_PATH_BRACKETS_REGEXP.test(path) ? path : null))
         .filter((x) => x !== null)
 }
 
-function extractPathKey(path: string): string {
+export function extractPathKey(path: string): string {
     return path.slice(1, DYNAMIC_PATH_COLON_REGEXP.test(path) ? undefined : -1)
 }
 
@@ -21,10 +21,7 @@ function extractPathKey(path: string): string {
 export function refinePathnameWithQuery(pathname: string, query: Record<string, string>): string {
     return getDynamicPaths(pathname).reduce((acc, path) => {
         const pathKey = extractPathKey(path)
-        if (!query[pathKey]) {
-            throw new Error(`Missing query parameter for dynamic segment: ${pathKey}`)
-        }
-        return acc.replace(path, query[pathKey])
+        return query[pathKey] ? acc.replace(path, query[pathKey]) : acc
     }, pathname)
 }
 
