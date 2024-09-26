@@ -310,7 +310,7 @@ export default class NURL implements URL {
         } else {
             this._href = `${this._protocol}${this._protocol && '//'}${this._username}${this._password ? ':' + this._password : ''}${
                 this._username || this._password ? '@' : ''
-            }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname}${this._search}${this._hash}`
+            }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname === '/' ? '' : this._pathname}${this._search}${this._hash}`
 
             if (!this._origin) {
                 this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`

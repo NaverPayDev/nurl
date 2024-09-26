@@ -329,6 +329,26 @@ describe('NURL', () => {
                 url.search = '?id=3'
                 expect(url.href).toBe('https://example.com/users/[id]?id=3')
             })
+
+            describe('setter should handle korean characters', () => {
+                test('should handle korean hostname', () => {
+                    const url = new NURL('https://example.com')
+                    url.hostname = '한글.도메인'
+                    expect(decodeURI(url.href)).toBe('https://한글.도메인')
+                })
+
+                test('should handle korean pathname', () => {
+                    const url = new NURL('https://example.com')
+                    url.pathname = '/한글/경로'
+                    expect(decodeURI(url.href)).toBe('https://example.com/한글/경로')
+                })
+
+                test('should handle korean search', () => {
+                    const url = new NURL('https://example.com')
+                    url.search = '?검색어=값'
+                    expect(decodeURI(url.href)).toBe('https://example.com?검색어=값')
+                })
+            })
         })
 
         describe('Search Parameters Operations', () => {
@@ -489,6 +509,13 @@ describe('NURL', () => {
                 expect(url.protocol).toBe('')
                 expect(url.hostname).toBe('')
             })
+
+            test('protocol can be changed to a non-special protocol', () => {
+                const url = new NURL('https://example.com')
+                url.protocol = 'bokdol'
+                expect(url.protocol).not.toBe('https')
+                expect(url.protocol).toBe('bokdol')
+            })
         })
 
         describe('Internationalization support', () => {
@@ -542,6 +569,12 @@ describe('NURL', () => {
                 expect(url.search.includes('%')).toBe(true)
                 expect(decodeURIComponent(url.search)).toBe(`?${key}=${value}`)
                 expect(url.searchParams.get(key)).toBe(value)
+            })
+
+            test('should support encoding', () => {
+                const originalUrl = 'https://한글도메인.테스트/한글/경로?검색어=값'
+                const url = new NURL(originalUrl)
+                expect(url.href).not.toBe(originalUrl)
             })
         })
     })
