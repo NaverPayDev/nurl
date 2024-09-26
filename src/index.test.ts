@@ -563,6 +563,12 @@ describe('NURL', () => {
                 expect(decodeURIComponent(url.search)).toBe(`?${key}=${value}`)
                 expect(url.searchParams.get(key)).toBe(value)
             })
+
+            test('should support encoding', () => {
+                const originalUrl = 'https://한글도메인.테스트/한글/경로?검색어=값'
+                const url = new NURL(originalUrl)
+                expect(url.href).not.toBe(originalUrl)
+            })
         })
     })
 })
