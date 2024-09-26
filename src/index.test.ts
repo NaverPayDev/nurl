@@ -329,6 +329,26 @@ describe('NURL', () => {
                 url.search = '?id=3'
                 expect(url.href).toBe('https://example.com/users/[id]?id=3')
             })
+
+            describe('setter should handle korean characters', () => {
+                test('should handle korean hostname', () => {
+                    const url = new NURL('https://example.com')
+                    url.hostname = '한글.도메인'
+                    expect(decodeURI(url.href)).toBe('https://한글.도메인')
+                })
+
+                test('should handle korean pathname', () => {
+                    const url = new NURL('https://example.com')
+                    url.pathname = '/한글/경로'
+                    expect(decodeURI(url.href)).toBe('https://example.com/한글/경로')
+                })
+
+                test('should handle korean search', () => {
+                    const url = new NURL('https://example.com')
+                    url.search = '?검색어=값'
+                    expect(decodeURI(url.href)).toBe('https://example.com?검색어=값')
+                })
+            })
         })
 
         describe('Search Parameters Operations', () => {
