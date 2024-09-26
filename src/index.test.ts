@@ -509,6 +509,13 @@ describe('NURL', () => {
                 expect(url.protocol).toBe('')
                 expect(url.hostname).toBe('')
             })
+
+            test('protocol can be changed to a non-special protocol', () => {
+                const url = new NURL('https://example.com')
+                url.protocol = 'bokdol'
+                expect(url.protocol).not.toBe('https')
+                expect(url.protocol).toBe('bokdol')
+            })
         })
 
         describe('Internationalization support', () => {
