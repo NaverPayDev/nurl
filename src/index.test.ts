@@ -333,20 +333,29 @@ describe('NURL', () => {
             describe('setter should handle korean characters', () => {
                 test('should handle korean hostname', () => {
                     const url = new NURL('https://example.com')
-                    url.hostname = '한글.도메인'
-                    expect(decodeURI(url.href)).toBe('https://한글.도메인')
+                    const koreanHostname = '한글.도메인'
+                    url.hostname = koreanHostname
+                    expect(decodeURI(url.href)).toBe(`https://${koreanHostname}`)
+                    expect(url.hostname).not.toBe(koreanHostname)
+                    expect(decodeURI(url.hostname)).toBe(koreanHostname)
                 })
 
                 test('should handle korean pathname', () => {
                     const url = new NURL('https://example.com')
-                    url.pathname = '/한글/경로'
-                    expect(decodeURI(url.href)).toBe('https://example.com/한글/경로')
+                    const koreanPathname = '/한글/경로'
+                    url.pathname = koreanPathname
+                    expect(decodeURI(url.href)).toBe(`https://example.com${koreanPathname}`)
+                    expect(url.pathname).not.toBe(koreanPathname)
+                    expect(decodeURI(url.pathname)).toBe(koreanPathname)
                 })
 
                 test('should handle korean search', () => {
                     const url = new NURL('https://example.com')
-                    url.search = '?검색어=값'
-                    expect(decodeURI(url.href)).toBe('https://example.com?검색어=값')
+                    const koreanSearch = '?검색어=값'
+                    url.search = koreanSearch
+                    expect(decodeURI(url.href)).toBe(`https://example.com${koreanSearch}`)
+                    expect(url.search).not.toBe(koreanSearch)
+                    expect(decodeURI(url.search)).toBe(koreanSearch)
                 })
             })
         })
