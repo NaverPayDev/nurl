@@ -326,7 +326,7 @@ export default class NURL implements URL {
         return this._href
     }
 
-    punycodePrefix = 'xn--'
+    private punycodePrefix = 'xn--'
 
     get decodedIDN(): string {
         let href = this._href
