@@ -336,7 +336,7 @@ describe('NURL', () => {
                     const url = new NURL('https://example.com')
                     const koreanHostname = '한글.도메인'
                     url.hostname = koreanHostname
-                    expect(decodeURI(url.href)).toBe(`https://${koreanHostname}`)
+                    expect(decode(url.href)).toBe(`https://${koreanHostname}`)
                     expect(url.hostname).not.toBe(koreanHostname)
                     expect(decode(url.hostname)).toBe(koreanHostname)
                     expect(url.pathname).toBe(encode(koreanHostname))
@@ -368,6 +368,14 @@ describe('NURL', () => {
                     url.search = `?${koreanSearchParams.key}=${koreanSearchParams.value}`
                     expect(url.searchParams.get(koreanSearchParams.key)).toBe(koreanSearchParams.value)
                     expect([...url.searchParams.keys()][0]).toBe(koreanSearchParams.key)
+                })
+
+                test('host should be updated correctly when hostname changes', () => {
+                    const url = new NURL('https://example.com')
+                    const koreanHostname = '한글.도메인'
+                    url.hostname = koreanHostname
+                    expect(decode(url.host)).toBe(koreanHostname)
+                    expect(url.host).toBe(decode(koreanHostname))
                 })
             })
         })
