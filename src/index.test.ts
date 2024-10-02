@@ -361,6 +361,14 @@ describe('NURL', () => {
                     expect(decodeURI(url.search)).toBe(koreanSearch)
                     expect(url.search).toBe(encodeURI(koreanSearch))
                 })
+
+                test('search parameters should be updated correctly when the search changes', () => {
+                    const url = new NURL('https://example.com')
+                    const koreanSearchParams = {key: '검색어', value: '값'}
+                    url.search = `?${koreanSearchParams.key}=${koreanSearchParams.value}`
+                    expect(url.searchParams.get(koreanSearchParams.key)).toBe(koreanSearchParams.value)
+                    expect([...url.searchParams.keys()][0]).toBe(koreanSearchParams.key)
+                })
             })
         })
 
