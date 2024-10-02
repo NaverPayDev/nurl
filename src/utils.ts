@@ -6,10 +6,7 @@ export function isDynamicPath(path: string) {
 }
 
 export function getDynamicPaths(pathname: string): string[] {
-    return pathname
-        .split('/')
-        .map((path) => (DYNAMIC_PATH_COLON_REGEXP.test(path) || DYNAMIC_PATH_BRACKETS_REGEXP.test(path) ? path : null))
-        .filter((x) => x !== null)
+    return pathname.split('/').filter(isDynamicPath)
 }
 
 export function extractPathKey(path: string): string {
