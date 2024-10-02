@@ -1,4 +1,4 @@
-import {encode} from 'punycode/'
+import {decode, encode} from 'punycode/'
 import {describe, test, expect} from 'vitest'
 
 import NURL from './nurl'
@@ -338,7 +338,7 @@ describe('NURL', () => {
                     url.hostname = koreanHostname
                     expect(decodeURI(url.href)).toBe(`https://${koreanHostname}`)
                     expect(url.hostname).not.toBe(koreanHostname)
-                    expect(decodeURI(url.hostname)).toBe(koreanHostname)
+                    expect(decode(url.hostname)).toBe(koreanHostname)
                     expect(url.pathname).toBe(encode(koreanHostname))
                 })
 
