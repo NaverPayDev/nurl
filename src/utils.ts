@@ -1,6 +1,10 @@
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
 
+export function isDynamicPath(path: string) {
+    return DYNAMIC_PATH_COLON_REGEXP.test(path) || DYNAMIC_PATH_BRACKETS_REGEXP.test(path)
+}
+
 export function getDynamicPaths(pathname: string): string[] {
     return pathname
         .split('/')

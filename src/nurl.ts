@@ -7,7 +7,7 @@
  */
 import {decode, encode} from 'punycode/'
 
-import {extractPathKey, getDynamicPaths, refinePathnameWithQuery, refineQueryWithPathname} from './utils'
+import {extractPathKey, getDynamicPaths, isDynamicPath, refinePathnameWithQuery, refineQueryWithPathname} from './utils'
 
 interface URLOptions extends Partial<URL> {
     baseUrl?: string
@@ -204,8 +204,13 @@ export default class NURL implements URL {
         return this._pathname
     }
 
-    set pathname(value: string) {
-        this._pathname = value.startsWith('/') ? value : `/${value}`
+    set pathname(pathname: string) {
+        const encodedPathname = pathname
+            .split('/')
+            .map((segment) => (isDynamicPath(segment) ? segment : encodeURI(segment)))
+            .join('/')
+
+        this._pathname = encodedPathname.startsWith('/') ? encodedPathname : `/${encodedPathname}`
         this.updateHref()
     }
 
@@ -213,9 +218,10 @@ export default class NURL implements URL {
         return this._search
     }
 
-    set search(value: string) {
-        this._search = value.startsWith('?') ? value : `?${value}`
-        this._searchParams = new URLSearchParams(value)
+    set search(search: string) {
+        const encodedSearch = encodeURI(search)
+        this._search = encodedSearch.startsWith('?') ? encodedSearch : `?${encodedSearch}`
+        this._searchParams = new URLSearchParams(encodedSearch)
         this.updateHref()
     }
 
