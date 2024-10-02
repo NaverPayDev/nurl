@@ -1,3 +1,4 @@
+import {encode} from 'punycode/'
 import {describe, test, expect} from 'vitest'
 
 import NURL from './nurl'
@@ -338,6 +339,7 @@ describe('NURL', () => {
                     expect(decodeURI(url.href)).toBe(`https://${koreanHostname}`)
                     expect(url.hostname).not.toBe(koreanHostname)
                     expect(decodeURI(url.hostname)).toBe(koreanHostname)
+                    expect(url.pathname).toBe(encode(koreanHostname))
                 })
 
                 test('should handle korean pathname', () => {
@@ -347,6 +349,7 @@ describe('NURL', () => {
                     expect(decodeURI(url.href)).toBe(`https://example.com${koreanPathname}`)
                     expect(url.pathname).not.toBe(koreanPathname)
                     expect(decodeURI(url.pathname)).toBe(koreanPathname)
+                    expect(url.pathname).toBe(encodeURI(koreanPathname))
                 })
 
                 test('should handle korean search', () => {
@@ -356,6 +359,7 @@ describe('NURL', () => {
                     expect(decodeURI(url.href)).toBe(`https://example.com${koreanSearch}`)
                     expect(url.search).not.toBe(koreanSearch)
                     expect(decodeURI(url.search)).toBe(koreanSearch)
+                    expect(url.search).toBe(encodeURI(koreanSearch))
                 })
             })
         })
