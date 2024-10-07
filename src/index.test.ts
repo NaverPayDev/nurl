@@ -339,7 +339,7 @@ describe('NURL', () => {
                     expect(decode(url.href)).toBe(`https://${koreanHostname}`)
                     expect(url.hostname).not.toBe(koreanHostname)
                     expect(decode(url.hostname)).toBe(koreanHostname)
-                    expect(url.pathname).toBe(encode(koreanHostname))
+                    expect(url.hostname).toBe(encode(koreanHostname))
                 })
 
                 test('should handle korean pathname', () => {
