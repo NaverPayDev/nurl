@@ -130,7 +130,7 @@ export default class NURL implements URL {
     }
 
     get href(): string {
-        return this._href
+        return this.pathname.length === 1 ? `${this._href}/` : this._href
     }
 
     set href(value: string) {
@@ -330,11 +330,11 @@ export default class NURL implements URL {
     }
 
     toString(): string {
-        return this._href
+        return this.href
     }
 
     toJSON(): string {
-        return this._href
+        return this.href
     }
 
     private punycodePrefix = 'xn--'
