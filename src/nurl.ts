@@ -323,9 +323,7 @@ export default class NURL implements URL {
                 this._username || this._password ? '@' : ''
             }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname === '/' ? '' : this._pathname}${this._search}${this._hash}`
 
-            if (!this._origin) {
-                this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
-            }
+            this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
         }
     }
 
