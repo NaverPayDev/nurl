@@ -2,6 +2,22 @@ import {describe, test, expect} from 'vitest'
 
 import NURL from './nurl'
 
+const compareNurlWithUrl = ({url, nurl}: {url: URL; nurl: NURL}) => {
+    expect(nurl.toString()).toBe(url.toString())
+    expect(nurl.href).toBe(url.href)
+    expect(nurl.origin).toBe(url.origin)
+    expect(nurl.protocol).toBe(url.protocol)
+    expect(nurl.username).toBe(url.username)
+    expect(nurl.password).toBe(url.password)
+    expect(nurl.host).toBe(url.host)
+    expect(nurl.hostname).toBe(url.hostname)
+    expect(nurl.port).toBe(url.port)
+    expect(nurl.pathname).toBe(url.pathname)
+    expect(nurl.search).toBe(url.search)
+    expect(nurl.searchParams.toString()).toBe(url.searchParams.toString())
+    expect(nurl.hash).toBe(url.hash)
+}
+
 describe('NURL', () => {
     describe('Constructor', () => {
         describe('new NURL("")', () => {
@@ -332,21 +348,48 @@ describe('NURL', () => {
 
             describe('setter should handle korean characters', () => {
                 test('should handle korean hostname', () => {
-                    const url = new NURL('https://example.com')
-                    url.hostname = '한글.도메인'
-                    expect(decodeURI(url.href)).toBe('https://한글.도메인')
+                    const nurl = new NURL('https://example.com')
+                    const url = new URL('https://example.com')
+                    const koreanHostname = '한글.도메인'
+                    nurl.hostname = koreanHostname
+                    url.hostname = koreanHostname
+                    compareNurlWithUrl({url, nurl})
                 })
 
                 test('should handle korean pathname', () => {
-                    const url = new NURL('https://example.com')
-                    url.pathname = '/한글/경로'
-                    expect(decodeURI(url.href)).toBe('https://example.com/한글/경로')
+                    const nurl = new NURL('https://example.com')
+                    const url = new URL('https://example.com')
+                    const koreanPathname = '/한글/경로'
+                    nurl.pathname = koreanPathname
+                    url.pathname = koreanPathname
+                    compareNurlWithUrl({url, nurl})
                 })
 
                 test('should handle korean search', () => {
+                    const nurl = new NURL('https://example.com')
                     const url = new NURL('https://example.com')
-                    url.search = '?검색어=값'
-                    expect(decodeURI(url.href)).toBe('https://example.com?검색어=값')
+                    const koreanSearch = '?검색어=값'
+                    nurl.search = koreanSearch
+                    url.search = koreanSearch
+                    compareNurlWithUrl({url, nurl})
+                })
+
+                test('search parameters should be updated correctly when the search changes', () => {
+                    const nurl = new NURL('https://example.com')
+                    const url = new NURL('https://example.com')
+                    const koreanSearchParams = {key: '검색어', value: '값'}
+                    nurl.search = `?${koreanSearchParams.key}=${koreanSearchParams.value}`
+                    url.search = `?${koreanSearchParams.key}=${koreanSearchParams.value}`
+                    compareNurlWithUrl({url, nurl})
+                })
+
+                test('host should be updated correctly when hostname changes', () => {
+                    const nurl = new NURL('https://example.com')
+                    const url = new NURL('https://example.com')
+                    const koreanHostname = '한글.도메인'
+                    url.hostname = koreanHostname
+                    nurl.hostname = koreanHostname
+                    compareNurlWithUrl({url, nurl})
                 })
             })
         })
