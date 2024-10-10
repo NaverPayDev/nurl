@@ -39,3 +39,8 @@ export function refineQueryWithPathname(pathname: string, query: Record<string, 
         return remainingQuery
     }, query)
 }
+
+const MAX_ASCII_CODE = 127
+export function isASCIICodeChar(char: string) {
+    return char.charCodeAt(0) > MAX_ASCII_CODE
+}

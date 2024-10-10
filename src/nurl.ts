@@ -7,7 +7,14 @@
  */
 import {decode, encode} from 'punycode/'
 
-import {extractPathKey, getDynamicPaths, isDynamicPath, refinePathnameWithQuery, refineQueryWithPathname} from './utils'
+import {
+    extractPathKey,
+    getDynamicPaths,
+    isASCIICodeChar,
+    isDynamicPath,
+    refinePathnameWithQuery,
+    refineQueryWithPathname,
+} from './utils'
 
 interface URLOptions extends Partial<URL> {
     baseUrl?: string
@@ -342,7 +349,7 @@ export default class NURL implements URL {
             .split('.')
             .map((segment) => {
                 for (const char of segment) {
-                    if (char.charCodeAt(0) > 127) {
+                    if (isASCIICodeChar(char)) {
                         return `${this.punycodePrefix}${encode(segment)}`
                     }
                 }
