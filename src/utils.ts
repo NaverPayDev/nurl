@@ -1,11 +1,12 @@
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
 
+export function isDynamicPath(path: string) {
+    return DYNAMIC_PATH_COLON_REGEXP.test(path) || DYNAMIC_PATH_BRACKETS_REGEXP.test(path)
+}
+
 export function getDynamicPaths(pathname: string): string[] {
-    return pathname
-        .split('/')
-        .map((path) => (DYNAMIC_PATH_COLON_REGEXP.test(path) || DYNAMIC_PATH_BRACKETS_REGEXP.test(path) ? path : null))
-        .filter((x) => x !== null)
+    return pathname.split('/').filter(isDynamicPath)
 }
 
 export function extractPathKey(path: string): string {
@@ -37,4 +38,9 @@ export function refineQueryWithPathname(pathname: string, query: Record<string, 
         const {[pathKey]: _, ...remainingQuery} = acc
         return remainingQuery
     }, query)
+}
+
+const MAX_ASCII_CODE = 127
+export function isASCIICodeChar(char: string) {
+    return char.charCodeAt(0) > MAX_ASCII_CODE
 }

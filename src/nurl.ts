@@ -5,9 +5,16 @@
  * @see https://github.com/mathiasbynens/punycode.js#installation
  * @see https://nodejs.org/api/punycode.html for deprecation info
  */
-import {decode} from 'punycode/'
+import {decode, encode} from 'punycode/'
 
-import {extractPathKey, getDynamicPaths, refinePathnameWithQuery, refineQueryWithPathname} from './utils'
+import {
+    extractPathKey,
+    getDynamicPaths,
+    isASCIICodeChar,
+    isDynamicPath,
+    refinePathnameWithQuery,
+    refineQueryWithPathname,
+} from './utils'
 
 interface URLOptions extends Partial<URL> {
     baseUrl?: string
@@ -130,7 +137,7 @@ export default class NURL implements URL {
     }
 
     get href(): string {
-        return this._href
+        return this.pathname.length === 1 ? `${this._href}/` : this._href
     }
 
     set href(value: string) {
@@ -168,9 +175,12 @@ export default class NURL implements URL {
     }
 
     set host(value: string) {
-        this._host = value
         const [hostname, port] = value.split(':')
-        this._hostname = hostname
+
+        const encodedHostname = this.encodeHostname(hostname)
+
+        this._host = port ? `${encodedHostname}:${port}` : encodedHostname
+        this._hostname = encodedHostname
         this._port = port || ''
         this.updateHref()
     }
@@ -180,8 +190,10 @@ export default class NURL implements URL {
     }
 
     set hostname(value: string) {
-        this._hostname = value
-        this._host = this._port ? `${value}:${this._port}` : value
+        const encodedHostname = this.encodeHostname(value)
+
+        this._hostname = encodedHostname
+        this._host = this._port ? `${encodedHostname}:${this._port}` : encodedHostname
         this.updateHref()
     }
 
@@ -199,8 +211,13 @@ export default class NURL implements URL {
         return this._pathname
     }
 
-    set pathname(value: string) {
-        this._pathname = value.startsWith('/') ? value : `/${value}`
+    set pathname(pathname: string) {
+        const encodedPathname = pathname
+            .split('/')
+            .map((segment) => (isDynamicPath(segment) ? segment : encodeURI(segment)))
+            .join('/')
+
+        this._pathname = encodedPathname.startsWith('/') ? encodedPathname : `/${encodedPathname}`
         this.updateHref()
     }
 
@@ -208,9 +225,10 @@ export default class NURL implements URL {
         return this._search
     }
 
-    set search(value: string) {
-        this._search = value.startsWith('?') ? value : `?${value}`
-        this._searchParams = new URLSearchParams(value)
+    set search(search: string) {
+        const encodedSearch = encodeURI(search)
+        this._search = encodedSearch.startsWith('?') ? encodedSearch : `?${encodedSearch}`
+        this._searchParams = new URLSearchParams(encodedSearch)
         this.updateHref()
     }
 
@@ -312,21 +330,33 @@ export default class NURL implements URL {
                 this._username || this._password ? '@' : ''
             }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname === '/' ? '' : this._pathname}${this._search}${this._hash}`
 
-            if (!this._origin) {
-                this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
-            }
+            this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
         }
     }
 
     toString(): string {
-        return this._href
+        return this.href
     }
 
     toJSON(): string {
-        return this._href
+        return this.href
     }
 
-    punycodePrefix = 'xn--'
+    private punycodePrefix = 'xn--'
+
+    private encodeHostname(hostname: string): string {
+        return hostname
+            .split('.')
+            .map((segment) => {
+                for (const char of segment) {
+                    if (isASCIICodeChar(char)) {
+                        return `${this.punycodePrefix}${encode(segment)}`
+                    }
+                }
+                return segment
+            })
+            .join('.')
+    }
 
     get decodedIDN(): string {
         let href = this._href
