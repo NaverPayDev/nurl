@@ -1,7 +1,6 @@
 {
     "name": "@naverpay/nurl",
     "version": "0.0.1",
-    "private": "true",
     "description": "",
     "main": "./dist/cjs/index.js",
     "module": "./dist/module/index.js",
@@ -38,7 +37,10 @@
         "markdownlint": "markdownlint '**/*.md' '#.changeset' '#**/CHANGELOG.md'",
         "markdownlint:fix": "markdownlint --fix '**/*.md' '#.changeset' '#**/CHANGELOG.md'"
     },
-    "keywords": [],
+    "keywords": [
+        "url",
+        "uri"
+    ],
     "author": "@NaverPayDev/frontend",
     "repository": {
         "type": "git",
