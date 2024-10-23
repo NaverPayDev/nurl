@@ -28,9 +28,6 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Build
-              run: pnpm build
-
             - name: Create Release Pull Request or Publish to npm
               id: changesets
               uses: changesets/action@v1
@@ -38,7 +35,6 @@ jobs:
                   title: '🚀 version changed packages'
                   commit: '📦 bump changed packages version'
                   publish: pnpm release
-                  setupGitUser: false
               env:
                   GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
