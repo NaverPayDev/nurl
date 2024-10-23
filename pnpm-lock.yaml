@@ -11,9 +11,9 @@ importers:
       '@babel/runtime-corejs3':
         specifier: ^7.25.6
         version: 7.25.6
-      punycode:
-        specifier: ^2.3.1
-        version: 2.3.1
+      npm-punycode:
+        specifier: npm:punycode@^2.3.1
+        version: punycode@2.3.1
     devDependencies:
       '@babel/plugin-transform-runtime':
         specifier: ^7.25.4
@@ -42,9 +42,9 @@ importers:
       '@rollup/plugin-babel':
         specifier: ^6.0.4
         version: 6.0.4(@babel/core@7.25.2)(@types/babel__core@7.20.5)(rollup@4.21.2)
-      '@types/punycode':
-        specifier: ^2.1.4
-        version: 2.1.4
+      '@types/npm-punycode':
+        specifier: npm:@types/punycode@^2.1.4
+        version: '@types/punycode@2.1.4'
       browserslist-to-esbuild:
         specifier: ^2.1.1
         version: 2.1.1(browserslist@4.23.3)
