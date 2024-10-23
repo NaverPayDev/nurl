@@ -69,5 +69,10 @@
         "vite": "^5.4.3",
         "vitest": "^2.0.5"
     },
-    "packageManager": "pnpm@9.1.1"
+    "packageManager": "pnpm@9.1.1",
+    "pnpm": {
+        "patchedDependencies": {
+            "punycode@2.3.1": "patches/punycode@2.3.1.patch"
+        }
+    }
 }

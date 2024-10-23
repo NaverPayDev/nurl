@@ -1,0 +1,36 @@
+diff --git a/package.json b/package.json
+index b8b76fc76c2162104f066c6f2330a7cacdee4a72..717b358f589e7b37db90a5991c077371dab8756d 100644
+--- a/package.json
++++ b/package.json
+@@ -3,9 +3,19 @@
+   "version": "2.3.1",
+   "description": "A robust Punycode converter that fully complies to RFC 3492 and RFC 5891, and works on nearly all JavaScript platforms.",
+   "homepage": "https://mths.be/punycode",
+-  "main": "punycode.js",
+-  "jsnext:main": "punycode.es6.js",
+-  "module": "punycode.es6.js",
++  "main": "punycode.cjs",
++  "jsnext:main": "punycode.es6.mjs",
++  "module": "punycode.es6.mjs",
++  "exports": {
++      ".": {
++          "import": {
++              "default": "./punycode.es6.mjs"
++          },
++          "require": {
++              "default": "./punycode.cjs"
++          }
++      }
++  },
+   "engines": {
+     "node": ">=6"
+   },
+diff --git a/punycode.js b/punycode.cjs
+similarity index 100%
+rename from punycode.js
+rename to punycode.cjs
+diff --git a/punycode.es6.js b/punycode.es6.mjs
+similarity index 100%
+rename from punycode.es6.js
+rename to punycode.es6.mjs
+index dadece25b35f595d717ec52adfc94d23d3b1edda..0000000000000000000000000000000000000000

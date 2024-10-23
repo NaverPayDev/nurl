@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  punycode@2.3.1:
+    hash: 3chbanumxrxjf27x54awjweob4
+    path: patches/punycode@2.3.1.patch
+
 importers:
 
   .:
@@ -13,7 +18,7 @@ importers:
         version: 7.25.6
       npm-punycode:
         specifier: npm:punycode@^2.3.1
-        version: punycode@2.3.1
+        version: punycode@2.3.1(patch_hash=3chbanumxrxjf27x54awjweob4)
     devDependencies:
       '@babel/plugin-transform-runtime':
         specifier: ^7.25.4
@@ -6563,7 +6568,7 @@ snapshots:
 
   pseudomap@1.0.2: {}
 
-  punycode@2.3.1: {}
+  punycode@2.3.1(patch_hash=3chbanumxrxjf27x54awjweob4): {}
 
   queue-microtask@1.2.3: {}
 
@@ -6928,7 +6933,7 @@ snapshots:
 
   tr46@1.0.1:
     dependencies:
-      punycode: 2.3.1
+      punycode: 2.3.1(patch_hash=3chbanumxrxjf27x54awjweob4)
 
   tree-kill@1.2.2: {}
 
@@ -7049,7 +7054,7 @@ snapshots:
 
   uri-js@4.4.1:
     dependencies:
-      punycode: 2.3.1
+      punycode: 2.3.1(patch_hash=3chbanumxrxjf27x54awjweob4)
 
   vite-node@2.0.5(@types/node@22.0.2)(terser@5.31.3):
     dependencies:
