@@ -5,7 +5,7 @@
  * @see https://github.com/mathiasbynens/punycode.js#installation
  * @see https://nodejs.org/api/punycode.html for deprecation info
  */
-import {decode, encode} from 'npm-punycode'
+import punycode from 'npm-punycode'
 
 import {
     extractPathKey,
@@ -350,7 +350,7 @@ export default class NURL implements URL {
             .map((segment) => {
                 for (const char of segment) {
                     if (isASCIICodeChar(char)) {
-                        return `${this.punycodePrefix}${encode(segment)}`
+                        return `${this.punycodePrefix}${punycode.encode(segment)}`
                     }
                 }
                 return segment
@@ -362,7 +362,7 @@ export default class NURL implements URL {
         let href = this._href
 
         this._hostname.split('.').forEach((segment) => {
-            href = href.replace(segment, decode(segment.replace(this.punycodePrefix, '')))
+            href = href.replace(segment, punycode.decode(segment.replace(this.punycodePrefix, '')))
         })
 
         return href
@@ -371,7 +371,7 @@ export default class NURL implements URL {
     get decodedHostname(): string {
         return this._hostname
             .split('.')
-            .map((segment) => decode(segment.replace(this.punycodePrefix, '')))
+            .map((segment) => punycode.decode(segment.replace(this.punycodePrefix, '')))
             .join('.')
     }
 }
