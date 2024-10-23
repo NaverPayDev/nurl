@@ -1,5 +1,11 @@
 # @naverpay/nurl
 
+## 0.0.4
+
+### Patch Changes
+
+-   57b65f2: 잘못 지워진 빌드 스텝 추가
+
 ## 0.0.3
 
 ### Patch Changes
