@@ -1,5 +1,11 @@
 # @naverpay/nurl
 
+## 0.0.5
+
+### Patch Changes
+
+-   9d429a1: [#31] 💩 esm 에서도 punycode cjs 동작하도록 변경
+
 ## 0.0.4
 
 ### Patch Changes
