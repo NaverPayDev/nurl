@@ -190,11 +190,14 @@ describe('NURL', () => {
                 const nurl = new NURL({
                     baseUrl: 'https://example.com',
                     pathname: '/path',
-                    query: {key: 'value', another: 'param'},
+                    query: {key: 'value', another: 'param', rurl: 'https://example.com'},
                 })
 
-                expect(nurl.href).toBe('https://example.com/path?key=value&another=param')
-                expect(nurl.search).toBe('?key=value&another=param')
+                expect(nurl.href).toBe(
+                    'https://example.com/path?key=value&another=param&rurl=https%3A%2F%2Fexample.com',
+                )
+                expect(nurl.search).toBe('?key=value&another=param&rurl=https%3A%2F%2Fexample.com')
+                expect(nurl.searchParams.get('rurl')).toBe('https://example.com')
             })
 
             test('should replace /:id with query parameter', () => {
@@ -327,6 +330,14 @@ describe('NURL', () => {
                 expect(url.href).toBe('https://example.com/newpath?key=value#newhash')
             })
 
+            test('should preserve raw search parameter when set via search property', () => {
+                const url = new NURL('https://example.com')
+                url.pathname = '/newpath'
+                url.search = '?a=/b'
+                url.hash = 'newhash'
+                expect(url.href).toBe('https://example.com/newpath?a=/b#newhash')
+            })
+
             test('should update searchParams when changing search', () => {
                 const url = new NURL('https://example.com')
                 url.search = 'key1=value1&key2=value2'
@@ -404,8 +415,9 @@ describe('NURL', () => {
 
                 test('should override existing search parameters', () => {
                     const url = new NURL('https://example.com?old=param')
-                    url.setSearchParams({new: 'value', another: 'param'})
-                    expect(url.search).toBe('?new=value&another=param')
+                    url.setSearchParams({new: 'value', another: 'param', rurl: 'https://example.com'})
+                    expect(url.search).toBe('?new=value&another=param&rurl=https%3A%2F%2Fexample.com')
+                    expect(url.searchParams.get('rurl')).toBe('https://example.com')
                 })
 
                 test('should handle empty object', () => {
