@@ -1,5 +1,11 @@
 # @naverpay/nurl
 
+## 0.0.6
+
+### Patch Changes
+
+-   95cf37d: - search 파라미터 이중 인코딩 제거 https://github.com/NaverPayDev/nurl/pull/35
+
 ## 0.0.5
 
 ### Patch Changes
