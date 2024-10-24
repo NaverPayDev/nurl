@@ -226,9 +226,8 @@ export default class NURL implements URL {
     }
 
     set search(search: string) {
-        const encodedSearch = encodeURI(search)
-        this._search = encodedSearch.startsWith('?') ? encodedSearch : `?${encodedSearch}`
-        this._searchParams = new URLSearchParams(encodedSearch)
+        this._search = search.startsWith('?') ? search : `?${search}`
+        this._searchParams = new URLSearchParams(search)
         this.updateHref()
     }
 
