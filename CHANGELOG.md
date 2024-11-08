@@ -1,5 +1,11 @@
 # @naverpay/nurl
 
+## 0.0.7
+
+### Patch Changes
+
+-   d2cc84e: [사용하는 값만 받도록 생성자 파라미터 타입 변경](https://github.com/NaverPayDev/nurl/pull/37)
+
 ## 0.0.6
 
 ### Patch Changes
