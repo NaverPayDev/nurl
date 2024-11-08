@@ -16,7 +16,22 @@ import {
     refineQueryWithPathname,
 } from './utils'
 
-interface URLOptions extends Partial<URL> {
+interface URLOptions
+    extends Partial<
+        Pick<
+            URL,
+            | 'href'
+            | 'protocol'
+            | 'host'
+            | 'hostname'
+            | 'port'
+            | 'pathname'
+            | 'search'
+            | 'hash'
+            | 'username'
+            | 'password'
+        >
+    > {
     baseUrl?: string
     query?: Record<string, string>
 }
