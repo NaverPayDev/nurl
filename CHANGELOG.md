@@ -1,5 +1,11 @@
 # @naverpay/nurl
 
+## 0.0.8
+
+### Patch Changes
+
+-   1047b48: 🚚 punycode 를 내재화합니다.
+
 ## 0.0.7
 
 ### Patch Changes
