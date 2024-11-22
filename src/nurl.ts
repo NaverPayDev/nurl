@@ -33,7 +33,10 @@ interface URLOptions
         >
     > {
     baseUrl?: string
-    query?: Record<string, string>
+    query?: Record<
+        string,
+        string | number | boolean | readonly string[] | readonly number[] | readonly boolean[] | null | undefined
+    >
 }
 
 export default class NURL implements URL {
