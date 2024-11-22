@@ -1,3 +1,5 @@
+import {QueryValue} from './types'
+
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
 
@@ -19,10 +21,10 @@ export function extractPathKey(path: string): string {
  * @param {Record<string, string>} query
  * @returns {string} refined pathname
  */
-export function refinePathnameWithQuery(pathname: string, query: Record<string, string>): string {
+export function refinePathnameWithQuery(pathname: string, query: Record<string, QueryValue>): string {
     return getDynamicPaths(pathname).reduce((acc, path) => {
         const pathKey = extractPathKey(path)
-        return query[pathKey] ? acc.replace(path, query[pathKey]) : acc
+        return query[pathKey] && typeof query[pathKey] === 'string' ? acc.replace(path, query[pathKey]) : acc
     }, pathname)
 }
 
@@ -32,7 +34,10 @@ export function refinePathnameWithQuery(pathname: string, query: Record<string, 
  * @param {Record<string, string>} query
  * @returns {Record<string, string>} refined query
  */
-export function refineQueryWithPathname(pathname: string, query: Record<string, string>): Record<string, string> {
+export function refineQueryWithPathname(
+    pathname: string,
+    query: Record<string, QueryValue>,
+): Record<string, QueryValue> {
     return getDynamicPaths(pathname).reduce((acc, path) => {
         const pathKey = extractPathKey(path)
         const {[pathKey]: _, ...remainingQuery} = acc

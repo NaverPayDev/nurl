@@ -7,6 +7,7 @@
  */
 import punycode from 'npm-punycode'
 
+import {QueryValue} from './types'
 import {
     extractPathKey,
     getDynamicPaths,
@@ -33,10 +34,7 @@ interface URLOptions
         >
     > {
     baseUrl?: string
-    query?: Record<
-        string,
-        string | number | boolean | readonly string[] | readonly number[] | readonly boolean[] | null | undefined
-    >
+    query?: Record<string, QueryValue>
 }
 
 export default class NURL implements URL {
