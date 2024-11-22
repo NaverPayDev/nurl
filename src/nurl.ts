@@ -1,12 +1,4 @@
-/**
- * Note: We use 'npm-punycode' alias instead of 'punycode/' to properly support dual packages in ESM.
- * This ensures that this third-party module is used instead of the built-in
- * Node.js 'punycode' module, which has been deprecated since Node.js v7.0.0.
- * @see https://github.com/mathiasbynens/punycode.js#installation
- * @see https://nodejs.org/api/punycode.html for deprecation info
- */
-import punycode from 'npm-punycode'
-
+import {decode, encode} from './punycode'
 import {
     extractPathKey,
     getDynamicPaths,
@@ -364,7 +356,7 @@ export default class NURL implements URL {
             .map((segment) => {
                 for (const char of segment) {
                     if (isASCIICodeChar(char)) {
-                        return `${this.punycodePrefix}${punycode.encode(segment)}`
+                        return `${this.punycodePrefix}${encode(segment)}`
                     }
                 }
                 return segment
@@ -376,7 +368,7 @@ export default class NURL implements URL {
         let href = this._href
 
         this._hostname.split('.').forEach((segment) => {
-            href = href.replace(segment, punycode.decode(segment.replace(this.punycodePrefix, '')))
+            href = href.replace(segment, decode(segment.replace(this.punycodePrefix, '')))
         })
 
         return href
@@ -385,7 +377,7 @@ export default class NURL implements URL {
     get decodedHostname(): string {
         return this._hostname
             .split('.')
-            .map((segment) => punycode.decode(segment.replace(this.punycodePrefix, '')))
+            .map((segment) => decode(segment.replace(this.punycodePrefix, '')))
             .join('.')
     }
 }
