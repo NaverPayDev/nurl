@@ -633,4 +633,57 @@ describe('NURL', () => {
             })
         })
     })
+
+    describe('Base Path Support', () => {
+        test('should prepend basePath when provided in constructor', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                basePath: '/app',
+                pathname: '/about',
+            })
+            expect(nurl.href).toBe('https://example.com/app/about')
+        })
+
+        test('should not double prepend basePath if pathname already includes it', () => {
+            const nurl = new NURL({
+                baseUrl: 'https://example.com',
+                basePath: '/app',
+                pathname: '/app/about',
+            })
+            expect(nurl.href).toBe('https://example.com/app/about')
+        })
+
+        test('should work with relative URLs', () => {
+            const nurl = new NURL({
+                basePath: '/app',
+                pathname: '/contact',
+            })
+            expect(nurl.href).toBe('/app/contact')
+        })
+
+        test('should update pathname with basePath after instantiation', () => {
+            const nurl = new NURL({baseUrl: 'https://example.com', basePath: '/app'})
+            nurl.pathname = '/features'
+            expect(nurl.href).toBe('https://example.com/app/features')
+        })
+
+        test('should allow using the withBasePath static method', () => {
+            const createNURL = NURL.withBasePath('/app')
+            const url = createNURL('https://example.com')
+            url.pathname = '/docs'
+            expect(url.href).toBe('https://example.com/app/docs')
+        })
+
+        test('withBasePath should handle URLOptions properly', () => {
+            const createNURL = NURL.withBasePath('/app')
+            const url = createNURL({baseUrl: 'https://example.com', pathname: '/team'})
+            expect(url.href).toBe('https://example.com/app/team')
+        })
+
+        test('withBasePath should not double prepend', () => {
+            const createNURL = NURL.withBasePath('/app')
+            const url = createNURL({baseUrl: 'https://example.com', pathname: '/app/help'})
+            expect(url.href).toBe('https://example.com/app/help')
+        })
+    })
 })

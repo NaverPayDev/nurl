@@ -26,6 +26,7 @@ interface URLOptions
     > {
     baseUrl?: string
     query?: Record<string, string>
+    basePath?: string
 }
 
 export default class NURL implements URL {
@@ -43,11 +44,17 @@ export default class NURL implements URL {
     private _baseUrl: string = ''
     private _searchParams: URLSearchParams = new URLSearchParams()
 
+    private _basePath: string = ''
+
     constructor(input?: string | URL | URLOptions) {
         this._searchParams = new URLSearchParams()
         if (typeof input === 'string' || input instanceof URL) {
             this.href = input.toString()
         } else if (input) {
+            if (input.basePath) {
+                this._basePath = input.basePath.startsWith('/') ? input.basePath : `/${input.basePath}`
+            }
+
             if (input.baseUrl) {
                 this.baseUrl = input.baseUrl
             }
@@ -67,7 +74,13 @@ export default class NURL implements URL {
                 this.port = input.port
             }
             if (input.pathname) {
-                this.pathname = refinePathnameWithQuery(input.pathname, input.query ?? {})
+                const basePath = this._basePath
+                let adjustedPathname = input.pathname
+                if (basePath && !adjustedPathname.startsWith(basePath)) {
+                    adjustedPathname = `${basePath}${adjustedPathname.startsWith('/') ? '' : '/'}${adjustedPathname}`
+                }
+
+                this.pathname = refinePathnameWithQuery(adjustedPathname, input.query ?? {})
             }
             if (input.search) {
                 this.search = input.search
@@ -88,6 +101,15 @@ export default class NURL implements URL {
                 }
             }
             this.updateHref()
+        }
+    }
+
+    static withBasePath(basePath: string) {
+        return (urlOptions?: string | URL | URLOptions) => {
+            if (typeof urlOptions === 'string' || urlOptions instanceof URL) {
+                return new NURL({href: urlOptions.toString(), basePath})
+            }
+            return new NURL({...urlOptions, basePath})
         }
     }
 
@@ -218,7 +240,12 @@ export default class NURL implements URL {
         return this._pathname
     }
 
-    set pathname(pathname: string) {
+    set pathname(inputPathname: string) {
+        let pathname = inputPathname
+        if (this._basePath && !pathname.startsWith(this._basePath)) {
+            pathname = `${this._basePath}${pathname.startsWith('/') ? '' : '/'}${pathname}`
+        }
+
         const encodedPathname = pathname
             .split('/')
             .map((segment) => (isDynamicPath(segment) ? segment : encodeURI(segment)))
