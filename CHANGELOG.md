@@ -1,5 +1,11 @@
 # @naverpay/nurl
 
+## 0.0.9
+
+### Patch Changes
+
+-   0e6c484: Add basePath Support to NURL Class with Duplicate Prevention
+
 ## 0.0.8
 
 ### Patch Changes
