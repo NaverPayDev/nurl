@@ -23,10 +23,7 @@
     "sideEffects": false,
     "scripts": {
         "clean": "rm -rf dist",
-        "build": "pnpm clean && vite build -c vite.config.mts && pnpm build-declarations",
-        "build-declarations:cjs": "tsup src/index.ts --format cjs --dts-only --out-dir ./dist/cjs --minify",
-        "build-declarations:esm": "tsup src/index.ts --format esm --dts-only --out-dir ./dist/esm --minify",
-        "build-declarations": "pnpm build-declarations:cjs && pnpm build-declarations:esm",
+        "build": "pnpm clean && vite build -c vite.config.mts",
         "test": "vitest run",
         "test:watch": "vitest watch",
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
@@ -48,22 +45,16 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@babel/plugin-transform-runtime": "^7.25.4",
-        "@babel/preset-env": "^7.25.4",
-        "@babel/runtime-corejs3": "^7.25.6",
         "@changesets/cli": "^2.27.7",
         "@naverpay/browserslist-config": "^1.6.1",
         "@naverpay/editorconfig": "^0.0.4",
         "@naverpay/eslint-config": "^1.0.7",
         "@naverpay/markdown-lint": "^0.0.3",
+        "@naverpay/pite": "^0.0.6",
         "@naverpay/prettier-config": "^1.0.0",
-        "@rollup/plugin-babel": "^6.0.4",
-        "babel-plugin-polyfill-corejs3": "^0.11.0",
-        "browserslist-to-esbuild": "^2.1.1",
-        "tsup": "^8.2.4",
         "typescript": "^5.5.4",
-        "vite": "^5.4.3",
-        "vitest": "^2.0.5"
+        "vite": "^6.0.7",
+        "vitest": "^2.1.8"
     },
-    "packageManager": "pnpm@9.13.2"
+    "packageManager": "pnpm@9.15.3"
 }
