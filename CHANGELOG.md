@@ -1,5 +1,13 @@
 # @naverpay/nurl
 
+## 0.0.10
+
+### Patch Changes
+
+-   7d58a89: 🔧 build with pite
+
+    PR: [🔧 build with pite](https://github.com/NaverPayDev/nurl/pull/48)
+
 ## 0.0.9
 
 ### Patch Changes
