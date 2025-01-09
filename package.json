@@ -1,6 +1,6 @@
 {
     "name": "@naverpay/nurl",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "URL build library",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.mjs",
