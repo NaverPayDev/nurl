@@ -39,6 +39,12 @@ export function refinePathnameWithQuery(pathname: string, query: Query): string 
 export function refineQueryWithPathname(pathname: string, query: Query): Query {
     return getDynamicPaths(pathname).reduce((acc, path) => {
         const pathKey = extractPathKey(path)
+
+        const queryValue = acc[pathKey]
+        if (typeof queryValue !== 'string') {
+            return acc
+        }
+
         const {[pathKey]: _, ...remainingQuery} = acc
         return remainingQuery
     }, query)
