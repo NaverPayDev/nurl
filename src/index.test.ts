@@ -200,6 +200,32 @@ describe('NURL', () => {
                 expect(nurl.searchParams.get('rurl')).toBe('https://example.com')
             })
 
+            test('should support number, boolean, and arrays in query', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/path',
+                    query: {page: 1, active: true, tags: ['news', 'tech']},
+                })
+
+                expect(nurl.href).toBe('https://example.com/path?page=1&active=true&tags=news&tags=tech')
+                expect(nurl.searchParams.get('page')).toBe('1')
+                expect(nurl.searchParams.get('active')).toBe('true')
+                expect(nurl.searchParams.getAll('tags')).toEqual(['news', 'tech'])
+            })
+
+            test('should exclude non-defined types from query', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/path',
+                    query: {valid: 'yes', invalid: {}, anotherInvalid: []} as any,
+                })
+
+                expect(nurl.href).toBe('https://example.com/path?valid=yes')
+                expect(nurl.searchParams.get('valid')).toBe('yes')
+                expect(nurl.searchParams.get('invalid')).toBeNull()
+                expect(nurl.searchParams.get('anotherInvalid')).toBeNull()
+            })
+
             test('should replace /:id with query parameter', () => {
                 const nurl = new NURL({
                     baseUrl: 'https://example.com',
@@ -209,6 +235,18 @@ describe('NURL', () => {
 
                 expect(nurl.href).toBe('https://example.com/users/123')
                 expect(nurl.pathname).toBe('/users/123')
+            })
+
+            test('should not replace /:id when value is not a string', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/users/:id',
+                    query: {id: 456},
+                })
+
+                expect(nurl.href).toBe('https://example.com/users/:id?id=456')
+                expect(nurl.searchParams.get('id')).toBe('456')
+                expect(nurl.pathname).toBe('/users/:id')
             })
 
             test('should replace /[id] with query parameter', () => {
@@ -222,6 +260,18 @@ describe('NURL', () => {
                 expect(nurl.pathname).toBe('/posts/456/comments')
             })
 
+            test('should not replace /:id when value is not a string', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/users/[id]',
+                    query: {id: 456},
+                })
+
+                expect(nurl.href).toBe('https://example.com/users/[id]?id=456')
+                expect(nurl.searchParams.get('id')).toBe('456')
+                expect(nurl.pathname).toBe('/users/[id]')
+            })
+
             test('should handle multiple dynamic segments', () => {
                 const nurl = new NURL({
                     baseUrl: 'https://example.com',
@@ -233,6 +283,18 @@ describe('NURL', () => {
                 expect(nurl.pathname).toBe('/users/789/posts/101112')
             })
 
+            test('should replace only string values in pathname and keep other query parameters', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/users/:userId/posts/:postId',
+                    query: {userId: '789', postId: 101112, sort: 'asc'},
+                })
+
+                expect(nurl.href).toBe('https://example.com/users/789/posts/:postId?postId=101112&sort=asc')
+                expect(nurl.pathname).toBe('/users/789/posts/:postId')
+                expect(nurl.search).toBe('?postId=101112&sort=asc')
+            })
+
             test('should keep query parameters not used in pathname', () => {
                 const nurl = new NURL({
                     pathname: '/users/:id',
@@ -242,6 +304,18 @@ describe('NURL', () => {
                 expect(nurl.href).toBe('/users/123?sort=asc&filter=active')
                 expect(nurl.pathname).toBe('/users/123')
                 expect(nurl.search).toBe('?sort=asc&filter=active')
+            })
+
+            test('should replace only string values in pathname with [bracket] notation and keep other query parameters', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/users/[userId]/posts/[postId]',
+                    query: {userId: '789', postId: 101112, sort: 'asc'},
+                })
+
+                expect(nurl.href).toBe('https://example.com/users/789/posts/[postId]?postId=101112&sort=asc')
+                expect(nurl.pathname).toBe('/users/789/posts/[postId]')
+                expect(nurl.search).toBe('?postId=101112&sort=asc')
             })
 
             test('should handle empty query object', () => {
