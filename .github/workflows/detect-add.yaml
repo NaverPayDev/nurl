@@ -1,7 +1,7 @@
 name: detect changed packages
 
 on:
-    pull_request:
+    pull_request_target:
         branches: ['**']
         types: [opened, reopened, labeled, unlabeled, synchronize]
 
