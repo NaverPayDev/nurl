@@ -1,5 +1,13 @@
 # @naverpay/nurl
 
+## 0.0.11
+
+### Patch Changes
+
+-   fa088d0: query 타입을 확장합니다.
+
+    PR: [query 타입을 확장합니다.](https://github.com/NaverPayDev/nurl/pull/50)
+
 ## 0.0.10
 
 ### Patch Changes
