@@ -217,6 +217,7 @@ describe('NURL', () => {
                 const nurl = new NURL({
                     baseUrl: 'https://example.com',
                     pathname: '/path',
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     query: {valid: 'yes', invalid: {}, anotherInvalid: []} as any,
                 })
 
