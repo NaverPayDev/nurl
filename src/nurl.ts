@@ -6,6 +6,8 @@ import {
     isDynamicPath,
     refinePathnameWithQuery,
     refineQueryWithPathname,
+    convertQueryToArray,
+    Query,
 } from './utils'
 
 interface URLOptions
@@ -25,7 +27,7 @@ interface URLOptions
         >
     > {
     baseUrl?: string
-    query?: Record<string, string>
+    query?: Query
     basePath?: string
 }
 
@@ -97,7 +99,7 @@ export default class NURL implements URL {
             if (input.query) {
                 const refinedQuery = refineQueryWithPathname(input.pathname ?? '', input.query)
                 if (Object.keys(refinedQuery).length > 0) {
-                    this.search = new URLSearchParams(refinedQuery).toString()
+                    this.search = new URLSearchParams(convertQueryToArray(refinedQuery)).toString()
                 }
             }
             this.updateHref()
