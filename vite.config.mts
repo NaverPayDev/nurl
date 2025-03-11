@@ -12,5 +12,5 @@ export default createViteConfig({
     entry: {
         index: './src/index.ts',
     },
-    allowedPolyfills: ['es.array.push'],
+    ignoredPolyfills: ['es.array.push'],
 })
