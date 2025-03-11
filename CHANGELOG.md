@@ -1,5 +1,13 @@
 # @naverpay/nurl
 
+## 0.0.12
+
+### Patch Changes
+
+-   0764534: 🐛 fix wrong options
+
+    PR: [🐛 fix wrong options](https://github.com/NaverPayDev/nurl/pull/52)
+
 ## 0.0.11
 
 ### Patch Changes
