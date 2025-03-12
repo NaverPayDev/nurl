@@ -187,8 +187,41 @@ export default class NURL implements URL {
             this._password = url.password
             this._searchParams = url.searchParams
         } catch (error) {
-            // eslint-disable-next-line no-console
-            console.warn(`Can not parse ${value}`, error)
+            const pattern =
+                /^(?:(https?:\/\/)(?:([^:@]+)(?::([^@]+))?@)?((?:[^/:?#]+)(?::(\d+))?)?)?([/][^?#]*)?(\?[^#]*)?(#.*)?$/
+            const match = value.match(pattern)
+            const [
+                ,
+                protocol = '',
+                username = '',
+                password = '',
+                hostname = '',
+                port = '',
+                pathname = '',
+                search = '',
+                hash = '',
+            ] = match || []
+
+            if (!match || (protocol && !hostname && !pathname && !search && !hash)) {
+                // eslint-disable-next-line no-console
+                console.warn(`Can not parse ${value}`, error)
+                return
+            }
+
+            const origin = protocol && hostname ? `${protocol}//${hostname}${port ? `:${port}` : ''}` : ''
+
+            this._href = value
+            this._protocol = protocol
+            this._host = hostname
+            this._hostname = hostname
+            this._port = port
+            this._pathname = value ? pathname || '/' : ''
+            this._search = search
+            this._hash = hash
+            this._origin = origin
+            this._username = username
+            this._password = password
+            this._searchParams = new URLSearchParams(search)
         }
     }
 

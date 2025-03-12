@@ -192,7 +192,7 @@ describe('NURL', () => {
 
                 // Then
                 expect(nurl2.baseUrl).toBe('')
-                expect(nurl2.pathname).toBe('')
+                expect(nurl2.pathname).toBe('/')
                 expect(nurl2.searchParams.get('query')).toBe('value')
             })
         })
