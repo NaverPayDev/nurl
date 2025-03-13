@@ -187,7 +187,7 @@ export default class NURL implements URL {
             this._password = url.password
             this._searchParams = url.searchParams
         } catch (error) {
-            const urlLike = this.parseStringToURLLike(value)
+            const urlLike = NURL.parseStringToURLLike(value)
 
             if (!urlLike) {
                 // eslint-disable-next-line no-console
@@ -206,11 +206,11 @@ export default class NURL implements URL {
             this._origin = urlLike.origin
             this._username = urlLike.username
             this._password = urlLike.password
-            this._searchParams = new URLSearchParams(urlLike.search)
+            this._searchParams = urlLike.searchParams
         }
     }
 
-    private parseStringToURLLike(value: string) {
+    static parseStringToURLLike(value: string) {
         const pattern =
             /^(?:(https?:\/\/)(?:([^:@]+)(?::([^@]+))?@)?((?:[^/:?#]+)(?::(\d+))?)?)?([/][^?#]*)?(\?[^#]*)?(#.*)?$/
         const match = value.match(pattern)
@@ -244,6 +244,7 @@ export default class NURL implements URL {
             origin,
             username,
             password,
+            searchParams: new URLSearchParams(search),
         }
     }
 
