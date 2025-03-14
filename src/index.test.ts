@@ -70,20 +70,7 @@ describe('NURL', () => {
             })
 
             test('should handle invalid URLs gracefully', () => {
-                const nurl = new NURL('invalid-url')
-
-                expect(nurl.href).toBe('')
-                expect(nurl.protocol).toBe('')
-                expect(nurl.host).toBe('')
-                expect(nurl.hostname).toBe('')
-                expect(nurl.port).toBe('')
-                expect(nurl.pathname).toBe('')
-                expect(nurl.search).toBe('')
-                expect(nurl.hash).toBe('')
-                expect(nurl.origin).toBe('')
-                expect(nurl.username).toBe('')
-                expect(nurl.password).toBe('')
-                expect(nurl.searchParams.toString()).toBe('')
+                expect(() => new NURL('invalid-url')).toThrowError()
             })
         })
 
@@ -171,6 +158,29 @@ describe('NURL', () => {
                 nurl.searchParams.set('updatedParam', 'updatedValue')
                 url.searchParams.set('updatedParam', 'updatedValue')
                 expect(nurl.search).toBe(url.search)
+            })
+
+            test('should create an instance even with a string missing baseUrl or pathname', () => {
+                // Given
+                const withoutBaseUrl = '/path?query=value'
+
+                // When
+                const nurl1 = new NURL(withoutBaseUrl)
+
+                // Then
+                expect(nurl1.baseUrl).toBe('')
+                expect(nurl1.pathname).toBe('/path')
+                expect(nurl1.searchParams.get('query')).toBe('value')
+
+                // Given
+                const withoutPathname = '?query=value'
+                // When
+                const nurl2 = new NURL(withoutPathname)
+
+                // Then
+                expect(nurl2.baseUrl).toBe('')
+                expect(nurl2.pathname).toBe('/')
+                expect(nurl2.searchParams.get('query')).toBe('value')
             })
         })
 
@@ -634,10 +644,7 @@ describe('NURL', () => {
             })
 
             test('should handle invalid input gracefully', () => {
-                const url = new NURL('invalid-url')
-                expect(url.href).toBe('')
-                expect(url.protocol).toBe('')
-                expect(url.hostname).toBe('')
+                expect(() => new NURL('invalid-url')).toThrowError()
             })
 
             test('protocol can be changed to a non-special protocol', () => {

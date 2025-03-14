@@ -187,8 +187,64 @@ export default class NURL implements URL {
             this._password = url.password
             this._searchParams = url.searchParams
         } catch (error) {
-            // eslint-disable-next-line no-console
-            console.warn(`Can not parse ${value}`, error)
+            const urlLike = NURL.parseStringToURLLike(value)
+
+            if (!urlLike) {
+                // eslint-disable-next-line no-console
+                console.warn(`Can not parse ${value}`)
+                throw error
+            }
+
+            this._href = urlLike.href
+            this._protocol = urlLike.protocol
+            this._host = urlLike.hostname
+            this._hostname = urlLike.hostname
+            this._port = urlLike.port
+            this._pathname = urlLike.pathname
+            this._search = urlLike.search
+            this._hash = urlLike.hash
+            this._origin = urlLike.origin
+            this._username = urlLike.username
+            this._password = urlLike.password
+            this._searchParams = urlLike.searchParams
+        }
+    }
+
+    static parseStringToURLLike(value: string) {
+        const pattern =
+            /^(?:(https?:\/\/)(?:([^:@]+)(?::([^@]+))?@)?((?:[^/:?#]+)(?::(\d+))?)?)?([/][^?#]*)?(\?[^#]*)?(#.*)?$/
+        const match = value.match(pattern)
+        const [
+            href = value,
+            protocol = '',
+            username = '',
+            password = '',
+            hostname = '',
+            port = '',
+            pathname = '',
+            search = '',
+            hash = '',
+        ] = match || []
+
+        if (!match || (protocol && !hostname && !pathname && !search && !hash)) {
+            return null
+        }
+
+        const origin = protocol && hostname ? `${protocol}//${hostname}${port ? `:${port}` : ''}` : ''
+
+        return {
+            href,
+            protocol,
+            host: hostname,
+            hostname,
+            port,
+            pathname: value ? pathname || '/' : '',
+            search,
+            hash,
+            origin,
+            username,
+            password,
+            searchParams: new URLSearchParams(search),
         }
     }
 
