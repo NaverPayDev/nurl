@@ -7,10 +7,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default createViteConfig({
     cwd: __dirname,
-    outDir: ['dist/cjs', 'dist/esm'],
-    formats: ['cjs', 'es'],
     entry: {
         index: './src/index.ts',
     },
-    ignoredPolyfills: ['es.array.push'],
+    outputs: [
+        {format: 'es', dist: 'dist/esm'},
+        {format: 'cjs', dist: 'dist/cjs'},
+    ],
+    skipRequiredPolyfillCheck: ['es.array.push'],
 })
