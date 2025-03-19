@@ -4,6 +4,7 @@
     "description": "URL build library",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.mjs",
+    "types": "./dist/cjs/index.d.ts",
     "exports": {
         ".": {
             "import": {
@@ -41,7 +42,7 @@
     "author": "@NaverPayDev/frontend",
     "repository": {
         "type": "git",
-        "url": "https://github.com/NaverPayDev/nurl.git"
+        "url": "git+https://github.com/NaverPayDev/nurl.git"
     },
     "license": "MIT",
     "devDependencies": {
@@ -50,7 +51,7 @@
         "@naverpay/editorconfig": "^0.0.4",
         "@naverpay/eslint-config": "^1.0.7",
         "@naverpay/markdown-lint": "^0.0.3",
-        "@naverpay/pite": "^0.0.6",
+        "@naverpay/pite": "^2.1.0",
         "@naverpay/prettier-config": "^1.0.0",
         "typescript": "^5.5.4",
         "vite": "^6.0.7",
