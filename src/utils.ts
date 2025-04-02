@@ -1,7 +1,8 @@
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
 
-export type Query = Record<string, string | number | boolean | (string | number | boolean)[]>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Query = Record<string, any>
 
 export function isDynamicPath(path: string) {
     return DYNAMIC_PATH_COLON_REGEXP.test(path) || DYNAMIC_PATH_BRACKETS_REGEXP.test(path)
