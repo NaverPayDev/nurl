@@ -1,5 +1,13 @@
 # @naverpay/nurl
 
+## 0.1.1
+
+### Patch Changes
+
+-   21a57e7: Update Query type to use more flexible
+
+    PR: [Update Query type to use more flexible](https://github.com/NaverPayDev/nurl/pull/60)
+
 ## 0.1.0
 
 ### Minor Changes
