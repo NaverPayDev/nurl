@@ -779,8 +779,8 @@ describe('NURL', () => {
 
         test('should correctly handle empty pathname with query params', () => {
             const nurl = new NURL({pathname: '', query: {test: '1'}})
-            expect(nurl.href).toBe('/?test=1')
-            expect(nurl.pathname).toBe('/')
+            expect(nurl.href).toBe('?test=1')
+            expect(nurl.pathname).toBe('')
             expect(nurl.search).toBe('?test=1')
         })
 

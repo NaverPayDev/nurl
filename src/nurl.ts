@@ -76,13 +76,13 @@ export default class NURL implements URL {
                 this.port = input.port
             }
             if (input.pathname !== undefined) {
-                const basePath = this._basePath
-                let adjustedPathname = input.pathname || '/'
-                if (basePath && !adjustedPathname.startsWith(basePath)) {
-                    adjustedPathname = `${basePath}${adjustedPathname.startsWith('/') ? '' : '/'}${adjustedPathname}`
+                if (input.pathname === '') {
+                    this._pathname = ''
+                } else {
+                    this.pathname = refinePathnameWithQuery(input.pathname, input.query ?? {})
                 }
-
-                this.pathname = refinePathnameWithQuery(adjustedPathname, input.query ?? {})
+            } else {
+                this._pathname = ''
             }
             if (input.search) {
                 this.search = input.search
@@ -299,7 +299,11 @@ export default class NURL implements URL {
     }
 
     set pathname(inputPathname: string) {
-        let pathname = inputPathname || '/'
+        if (inputPathname === '') {
+            return
+        }
+
+        let pathname = inputPathname
 
         if (this._basePath && !pathname.startsWith(this._basePath)) {
             pathname = `${this._basePath}${pathname.startsWith('/') ? '' : '/'}${pathname}`
@@ -410,7 +414,7 @@ export default class NURL implements URL {
     }
 
     private updateHref() {
-        const pathname = this._pathname || '/'
+        const pathname = this._pathname
 
         if (this._baseUrl) {
             const baseUrl = new URL(this._baseUrl)
