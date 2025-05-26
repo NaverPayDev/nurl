@@ -33,7 +33,8 @@
         "prettier:fix": "prettier --write '**/*.{json,yaml,md,ts,tsx,js,jsx}'",
         "release": "changeset publish",
         "markdownlint": "markdownlint '**/*.md' '#.changeset' '#**/CHANGELOG.md'",
-        "markdownlint:fix": "markdownlint --fix '**/*.md' '#.changeset' '#**/CHANGELOG.md'"
+        "markdownlint:fix": "markdownlint --fix '**/*.md' '#.changeset' '#**/CHANGELOG.md'",
+        "release:canary": "pnpm run build && changeset publish --no-git-tag --directory dist"
     },
     "keywords": [
         "url",
