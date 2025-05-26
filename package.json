@@ -34,7 +34,7 @@
         "release": "changeset publish",
         "markdownlint": "markdownlint '**/*.md' '#.changeset' '#**/CHANGELOG.md'",
         "markdownlint:fix": "markdownlint --fix '**/*.md' '#.changeset' '#**/CHANGELOG.md'",
-        "release:canary": "pnpm run build && changeset publish --no-git-tag --directory dist"
+        "release:canary": "changeset publish --no-git-tag --directory dist"
     },
     "keywords": [
         "url",

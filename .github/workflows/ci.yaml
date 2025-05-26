@@ -15,10 +15,15 @@ jobs:
                   node-version: '22.x'
             - name: Enable Corepack
               run: corepack enable
+
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
-            - run: pnpm run prettier
-            - run: pnpm run lint
+
+            - name: Run code style checks
+              run: pnpm run prettier
+
+            - name: Run ESlint
+              run: pnpm run lint
 
     test:
         runs-on: ubuntu-latest
