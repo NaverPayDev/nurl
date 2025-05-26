@@ -75,14 +75,14 @@ export default class NURL implements URL {
             if (input.port) {
                 this.port = input.port
             }
-            if (input.pathname) {
-                const basePath = this._basePath
-                let adjustedPathname = input.pathname
-                if (basePath && !adjustedPathname.startsWith(basePath)) {
-                    adjustedPathname = `${basePath}${adjustedPathname.startsWith('/') ? '' : '/'}${adjustedPathname}`
+            if (input.pathname !== undefined) {
+                if (input.pathname === '') {
+                    this._pathname = ''
+                } else {
+                    this.pathname = refinePathnameWithQuery(input.pathname, input.query ?? {})
                 }
-
-                this.pathname = refinePathnameWithQuery(adjustedPathname, input.query ?? {})
+            } else {
+                this._pathname = ''
             }
             if (input.search) {
                 this.search = input.search
@@ -168,7 +168,7 @@ export default class NURL implements URL {
     }
 
     get href(): string {
-        return this.pathname.length === 1 ? `${this._href}/` : this._href
+        return this._href
     }
 
     set href(value: string) {
@@ -300,6 +300,14 @@ export default class NURL implements URL {
 
     set pathname(inputPathname: string) {
         let pathname = inputPathname
+
+        if (inputPathname === '') {
+            pathname = '/'
+            this._pathname = pathname
+            this.updateHref()
+            return
+        }
+
         if (this._basePath && !pathname.startsWith(this._basePath)) {
             pathname = `${this._basePath}${pathname.startsWith('/') ? '' : '/'}${pathname}`
         }
@@ -409,9 +417,11 @@ export default class NURL implements URL {
     }
 
     private updateHref() {
+        const pathname = this._pathname
+
         if (this._baseUrl) {
             const baseUrl = new URL(this._baseUrl)
-            baseUrl.pathname = this._pathname
+            baseUrl.pathname = pathname
             baseUrl.search = this._search
             baseUrl.hash = this._hash
             this._href = baseUrl.href
@@ -419,7 +429,7 @@ export default class NURL implements URL {
         } else {
             this._href = `${this._protocol}${this._protocol && '//'}${this._username}${this._password ? ':' + this._password : ''}${
                 this._username || this._password ? '@' : ''
-            }${this._hostname}${this._port ? ':' + this._port : ''}${this._pathname === '/' ? '' : this._pathname}${this._search}${this._hash}`
+            }${this._hostname}${this._port ? ':' + this._port : ''}${pathname}${this._search}${this._hash}`
 
             this._origin = `${this._protocol}//${this._hostname}${this._port ? ':' + this._port : ''}`
         }

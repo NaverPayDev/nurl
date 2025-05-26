@@ -768,4 +768,73 @@ describe('NURL', () => {
             expect(url.href).toBe('https://example.com/app/help')
         })
     })
+
+    describe('href handling edge cases', () => {
+        test('should correctly handle root path with query params', () => {
+            const nurl = new NURL({pathname: '/', query: {test: '1'}})
+            expect(nurl.href).toBe('/?test=1')
+            expect(nurl.pathname).toBe('/')
+            expect(nurl.search).toBe('?test=1')
+        })
+
+        test('should correctly handle empty pathname with query params', () => {
+            const nurl = new NURL({pathname: '', query: {test: '1'}})
+            expect(nurl.href).toBe('?test=1')
+            expect(nurl.pathname).toBe('')
+            expect(nurl.search).toBe('?test=1')
+        })
+
+        test('should correctly handle pathname="/" explicitly set after instantiation', () => {
+            const nurl = new NURL()
+            nurl.pathname = '/'
+            nurl.setSearchParams({test: '1'})
+
+            expect(nurl.href).toBe('/?test=1')
+            expect(nurl.pathname).toBe('/')
+            expect(nurl.search).toBe('?test=1')
+        })
+
+        test('should correctly handle setting hostname with IDN and ensure single trailing slash', () => {
+            const nurl = new NURL('https://example.com')
+            nurl.hostname = '한글.도메인'
+
+            expect(nurl.href).toBe('https://xn--bj0bj06e.xn--hq1bm8jm9l/')
+            expect(nurl.hostname).toBe('xn--bj0bj06e.xn--hq1bm8jm9l')
+            expect(nurl.pathname).toBe('/')
+        })
+
+        test('should handle setting pathname to "/" explicitly and ensure no duplicated slashes', () => {
+            const nurl = new NURL('https://example.com/somepath')
+            nurl.pathname = '/'
+
+            expect(nurl.href).toBe('https://example.com/')
+            expect(nurl.pathname).toBe('/')
+        })
+
+        test('should not add unnecessary trailing slash', () => {
+            const nurl = new NURL('https://example.com')
+            expect(nurl.href).toBe('https://example.com/')
+            expect(nurl.pathname).toBe('/')
+        })
+
+        test('should maintain correct pathname and search when using appendSearchParams on root', () => {
+            const nurl = new NURL('/')
+            nurl.appendSearchParams({added: 'param'})
+
+            expect(nurl.href).toBe('/?added=param')
+            expect(nurl.pathname).toBe('/')
+        })
+
+        test('should correctly handle baseUrl with pathname="/"', () => {
+            const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/'})
+            expect(nurl.href).toBe('https://example.com/')
+            expect(nurl.pathname).toBe('/')
+        })
+
+        test('should correctly handle pathname without leading slash', () => {
+            const nurl = new NURL({pathname: 'path'})
+            expect(nurl.href).toBe('/path')
+            expect(nurl.pathname).toBe('/path')
+        })
+    })
 })
