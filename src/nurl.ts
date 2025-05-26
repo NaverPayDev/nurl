@@ -299,11 +299,14 @@ export default class NURL implements URL {
     }
 
     set pathname(inputPathname: string) {
+        let pathname = inputPathname
+
         if (inputPathname === '') {
+            pathname = '/'
+            this._pathname = pathname
+            this.updateHref()
             return
         }
-
-        let pathname = inputPathname
 
         if (this._basePath && !pathname.startsWith(this._basePath)) {
             pathname = `${this._basePath}${pathname.startsWith('/') ? '' : '/'}${pathname}`
