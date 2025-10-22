@@ -353,6 +353,66 @@ describe('NURL', () => {
                 const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', search: '?id=3'})
                 expect(nurl.href).toBe('https://example.com/users/[id]?id=3')
             })
+
+            test('should preserve root pathname when combining with query parameters', () => {
+                const nurl = new NURL({
+                    pathname: '/',
+                    query: {
+                        test: '1',
+                        key: 'value',
+                    },
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.search).toBe('?test=1&key=value')
+                expect(nurl.href).toBe('/?test=1&key=value')
+            })
+
+            test('should preserve root pathname when using baseUrl with query parameters', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/',
+                    query: {
+                        test: '1',
+                        key: 'value',
+                    },
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.search).toBe('?test=1&key=value')
+                expect(nurl.href).toBe('https://example.com/?test=1&key=value')
+            })
+        })
+
+        describe('new NURL({ href, query })', () => {
+            test('should preserve pathname from href only', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com/important/path',
+                })
+
+                expect(nurl.pathname).toBe('/important/path')
+                expect(nurl.href).toBe('https://example.com/important/path')
+            })
+
+            test('should preserve pathname from href when used with query', () => {
+                const nurl = new NURL({
+                    href: 'https://api.example.com/v1/users/123/settings',
+                    query: {tab: 'profile', from: 'dashboard'},
+                })
+
+                expect(nurl.pathname).toBe('/v1/users/123/settings')
+                expect(nurl.href).toBe('https://api.example.com/v1/users/123/settings?tab=profile&from=dashboard')
+            })
+
+            test('should preserve pathname from href with root path and query', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com/',
+                    query: {test: 'value'},
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.href).toBe('https://example.com/?test=value')
+            })
         })
     })
 
