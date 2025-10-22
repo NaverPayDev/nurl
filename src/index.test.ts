@@ -353,6 +353,35 @@ describe('NURL', () => {
                 const nurl = new NURL({baseUrl: 'https://example.com', pathname: '/users/[id]', search: '?id=3'})
                 expect(nurl.href).toBe('https://example.com/users/[id]?id=3')
             })
+
+            test('should preserve root pathname when combining with query parameters', () => {
+                const nurl = new NURL({
+                    pathname: '/',
+                    query: {
+                        test: '1',
+                        key: 'value',
+                    },
+                })
+                
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.search).toBe('?test=1&key=value')
+                expect(nurl.href).toBe('/?test=1&key=value')
+            })
+
+            test('should preserve root pathname when using baseUrl with query parameters', () => {
+                const nurl = new NURL({
+                    baseUrl: 'https://example.com',
+                    pathname: '/',
+                    query: {
+                        test: '1',
+                        key: 'value',
+                    },
+                })
+                
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.search).toBe('?test=1&key=value')
+                expect(nurl.href).toBe('https://example.com/?test=1&key=value')
+            })
         })
 
         describe('new NURL({ href, query })', () => {
