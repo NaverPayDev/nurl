@@ -81,8 +81,6 @@ export default class NURL implements URL {
                 } else {
                     this.pathname = refinePathnameWithQuery(input.pathname, input.query ?? {})
                 }
-            } else {
-                this._pathname = ''
             }
             if (input.search) {
                 this.search = input.search
