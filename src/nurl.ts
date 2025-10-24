@@ -45,7 +45,6 @@ export default class NURL implements URL {
     private _password: string = ''
     private _baseUrl: string = ''
     private _searchParams: URLSearchParams = new URLSearchParams()
-
     private _basePath: string = ''
 
     constructor(input?: string | URL | URLOptions) {
