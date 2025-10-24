@@ -1,5 +1,13 @@
 # @naverpay/nurl
 
+## 1.0.2
+
+### Patch Changes
+
+-   0dfac2c: remove else block that overwrites pathname in constructor
+
+    PR: [remove else block that overwrites pathname in constructor](https://github.com/NaverPayDev/nurl/pull/70)
+
 ## 1.0.1
 
 ### Patch Changes
