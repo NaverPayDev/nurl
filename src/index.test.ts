@@ -385,7 +385,25 @@ describe('NURL', () => {
         })
 
         describe('new NURL({ href, query })', () => {
-            test('should preserve pathname from href only', () => {
+            test('should handle root domain without trailing slash', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com',
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.href).toBe('https://example.com/')
+            })
+
+            test('should handle root domain with trailing slash', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com/',
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.href).toBe('https://example.com/')
+            })
+
+            test('should preserve pathname from href with path', () => {
                 const nurl = new NURL({
                     href: 'https://example.com/important/path',
                 })
@@ -394,7 +412,36 @@ describe('NURL', () => {
                 expect(nurl.href).toBe('https://example.com/important/path')
             })
 
-            test('should preserve pathname from href when used with query', () => {
+            test('should preserve pathname from href with path and trailing slash', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com/important/path/',
+                })
+
+                expect(nurl.pathname).toBe('/important/path/')
+                expect(nurl.href).toBe('https://example.com/important/path/')
+            })
+
+            test('should handle root domain with query parameters', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com',
+                    query: {test: 'value'},
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.href).toBe('https://example.com/?test=value')
+            })
+
+            test('should handle root domain with trailing slash and query parameters', () => {
+                const nurl = new NURL({
+                    href: 'https://example.com/',
+                    query: {test: 'value'},
+                })
+
+                expect(nurl.pathname).toBe('/')
+                expect(nurl.href).toBe('https://example.com/?test=value')
+            })
+
+            test('should preserve pathname when href has path and query parameters', () => {
                 const nurl = new NURL({
                     href: 'https://api.example.com/v1/users/123/settings',
                     query: {tab: 'profile', from: 'dashboard'},
@@ -404,14 +451,14 @@ describe('NURL', () => {
                 expect(nurl.href).toBe('https://api.example.com/v1/users/123/settings?tab=profile&from=dashboard')
             })
 
-            test('should preserve pathname from href with root path and query', () => {
+            test('should preserve pathname when href has path with trailing slash and query parameters', () => {
                 const nurl = new NURL({
-                    href: 'https://example.com/',
-                    query: {test: 'value'},
+                    href: 'https://api.example.com/v1/users/123/settings/',
+                    query: {tab: 'profile', from: 'dashboard'},
                 })
 
-                expect(nurl.pathname).toBe('/')
-                expect(nurl.href).toBe('https://example.com/?test=value')
+                expect(nurl.pathname).toBe('/v1/users/123/settings/')
+                expect(nurl.href).toBe('https://api.example.com/v1/users/123/settings/?tab=profile&from=dashboard')
             })
         })
     })
