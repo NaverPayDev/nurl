@@ -4,6 +4,10 @@ on:
         branches:
             - '**'
 
+permissions:
+    contents: write # to create release
+    id-token: write
+
 jobs:
     code-style:
         runs-on: ubuntu-latest

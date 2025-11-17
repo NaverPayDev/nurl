@@ -41,6 +41,9 @@ jobs:
             - name: build package
               run: pnpm run build
 
+            - name: Check npm version
+              run: npm --version
+
             - name: RC Publish
               uses: NaverPayDev/changeset-actions/canary-publish@oidc
               with:
