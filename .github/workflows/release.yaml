@@ -31,6 +31,14 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
+            -   name: Check and upgrade npm
+                run: |
+                    echo "Current npm version:"
+                    npm --version
+                    npm install -g npm@latest
+                    echo "Upgraded npm version:"
+                    npm --version
+
             - name: build package
               run: pnpm run build
 
