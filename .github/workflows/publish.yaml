@@ -101,3 +101,5 @@ jobs:
                   excludes: '.turbo,.github'
                   version_template: '{VERSION}-rc.{DATE}-{COMMITID7}'
                   create_release: true
+              env:
+                  GH_TOKEN: ${{ secrets.ACTION_TOKEN }}
