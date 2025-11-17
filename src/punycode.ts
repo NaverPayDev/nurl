@@ -45,8 +45,6 @@ const baseMinusTMin: number = base - tMin
 const floor: (x: number) => number = Math.floor
 const stringFromCharCode: (...codes: number[]) => string = String.fromCharCode
 
-/* -------------------------------------------------------------------------- */
-
 /**
  * A generic error utility function.
  * @private
