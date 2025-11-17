@@ -1,5 +1,21 @@
 # @naverpay/nurl
 
+## 1.0.3
+
+### Patch Changes
+
+-   05aa898: chore: update GitHub workflows for improved permissions
+
+    PR: [chore: update GitHub workflows for improved permissions](https://github.com/NaverPayDev/nurl/pull/74)
+
+-   5393314: Revert "test"
+
+    PR: [Revert "test"](https://github.com/NaverPayDev/nurl/pull/77)
+
+-   02c25f2: Revert "test"
+
+    PR: [Revert "test"](https://github.com/NaverPayDev/nurl/pull/78)
+
 ## 1.0.2
 
 ### Patch Changes
