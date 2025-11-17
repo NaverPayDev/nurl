@@ -10,6 +10,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
     contents: write # to create release
+    id-token: write
 
 jobs:
     canary:
