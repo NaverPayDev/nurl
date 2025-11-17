@@ -42,7 +42,7 @@ jobs:
               run: pnpm run build
 
             - name: RC Publish
-              uses: NaverPayDev/changeset-actions/canary-publish@main
+              uses: NaverPayDev/changeset-actions/canary-publish@oidc
               with:
                   github_token: ${{ secrets.ACTION_TOKEN }} # Add user PAT if necessary
                   npm_tag: rc # Specify the npm tag to use for deployment
