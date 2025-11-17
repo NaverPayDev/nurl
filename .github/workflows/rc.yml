@@ -8,16 +8,12 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions:
-    contents: write # to create release
-    id-token: write
-
 jobs:
-    rc:
+    get-branch:
         if: ${{ github.event.issue.pull_request && (github.event.comment.body == 'rc-publish' || github.event.comment.body == '/rc-publish')}}
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        outputs:
+            branch: ${{ steps.get_branch.outputs.branch }}
         steps:
             - name: Get PR branch name
               id: get_branch
@@ -25,38 +21,16 @@ jobs:
                   PR=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.issue.pull_request.url }})
                   echo "::set-output name=branch::$(echo $PR | jq -r '.head.ref')"
 
-            - uses: actions/checkout@v4
-              with:
-                  ref: ${{ steps.get_branch.outputs.branch }}
-                  fetch-depth: 0
-            - uses: pnpm/action-setup@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: '22'
-                  cache: 'pnpm'
-
-            - name: Check and upgrade npm
-              run: |
-                  echo "Current npm version:"
-                  npm --version
-                  npm install -g npm@latest
-                  echo "Upgraded npm version:"
-                  npm --version
-
-            - name: Install Dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: build package
-              run: pnpm run build
-
-            - name: RC Publish
-              uses: NaverPayDev/changeset-actions/canary-publish@oidc
-              with:
-                  github_token: ${{ secrets.ACTION_TOKEN }} # Add user PAT if necessary
-                  npm_tag: rc # Specify the npm tag to use for deployment
-                  # npm_token: ${{ secrets.NPM_TOKEN }} # Provide the token required for npm publishing
-                  publish_script: pnpm run release:canary # Script to execute Canary deployment
-                  packages_dir: '.'
-                  excludes: '.turbo,.github' # Files or directories to exclude from change detection
-                  version_template: '{VERSION}-rc.{DATE}-{COMMITID7}'
-                  create_release: true
+    rc:
+        needs: get-branch
+        uses: ./.github/workflows/publish.yaml
+        with:
+            publish_type: rc
+            npm_tag: rc
+            ref: ${{ needs.get-branch.outputs.branch }}
+            version_template: '{VERSION}-rc.{DATE}-{COMMITID7}'
+            packages_dir: '.'
+            excludes: '.turbo,.github'
+            create_release: true
+        secrets:
+            action_token: ${{ secrets.ACTION_TOKEN }}
