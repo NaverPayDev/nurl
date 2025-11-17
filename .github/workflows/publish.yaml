@@ -1,85 +1,45 @@
 name: Publish Package
 
 on:
-    workflow_call:
-        inputs:
-            publish_type:
-                description: 'Type of publish (release, canary, rc)'
-                required: true
-                type: string
-            npm_tag:
-                description: 'NPM tag to use for publishing'
-                required: false
-                type: string
-                default: 'latest'
-            ref:
-                description: 'Git ref to checkout (branch, tag, or commit)'
-                required: false
-                type: string
-                default: ''
-            version_template:
-                description: 'Version template for canary/rc releases'
-                required: false
-                type: string
-                default: ''
-            create_release:
-                description: 'Whether to create GitHub release'
-                required: false
-                type: boolean
-                default: false
-            create_github_release_tag:
-                description: 'Whether to create GitHub release tag'
-                required: false
-                type: boolean
-                default: false
-            pr_title:
-                description: 'PR title for version updates'
-                required: false
-                type: string
-                default: '🚀 version changed packages'
-            commit_message:
-                description: 'Commit message for version updates'
-                required: false
-                type: string
-                default: '📦 bump changed packages version'
-            git_username:
-                description: 'Git username for commits'
-                required: false
-                type: string
-                default: 'github-actions[bot]'
-            git_email:
-                description: 'Git email for commits'
-                required: false
-                type: string
-                default: 'github-actions[bot]@users.noreply.github.com'
-            packages_dir:
-                description: 'Directory containing packages'
-                required: false
-                type: string
-                default: '.'
-            excludes:
-                description: 'Files or directories to exclude from change detection'
-                required: false
-                type: string
-                default: '.turbo,.github'
-        secrets:
-            action_token:
-                description: 'GitHub Action Token'
-                required: true
+    push:
+        branches:
+            - main
+    issue_comment:
+        types:
+            - created
 
 permissions:
     id-token: write
     contents: write
 
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
+    get-branch:
+        if: github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.body == 'canary-publish' || github.event.comment.body == '/canary-publish' || github.event.comment.body == 'rc-publish' || github.event.comment.body == '/rc-publish')
+        runs-on: ubuntu-latest
+        outputs:
+            branch: ${{ steps.get_branch.outputs.branch }}
+        steps:
+            - name: Get PR branch name
+              id: get_branch
+              run: |
+                  PR=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.issue.pull_request.url }})
+                  echo "::set-output name=branch::$(echo $PR | jq -r '.head.ref')"
+
     publish:
         runs-on: ubuntu-latest
+        needs: [get-branch]
+        if: |
+            always() &&
+            (github.event_name == 'push' ||
+             (github.event_name == 'issue_comment' && needs.get-branch.result == 'success'))
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v4
               with:
-                  ref: ${{ inputs.ref || github.ref }}
-                  token: ${{ secrets.action_token }}
+                  ref: ${{ needs.get-branch.outputs.branch || github.ref }}
+                  token: ${{ secrets.ACTION_TOKEN }}
                   fetch-depth: 0
 
             - uses: pnpm/action-setup@v4
@@ -105,28 +65,39 @@ jobs:
               run: pnpm run build
 
             - name: Publish - Release
-              if: inputs.publish_type == 'release'
+              if: github.event_name == 'push'
               uses: NaverPayDev/changeset-actions/publish@oidc
               with:
-                  github_token: ${{ secrets.action_token }}
-                  git_username: ${{ inputs.git_username }}
-                  git_email: ${{ inputs.git_email }}
+                  github_token: ${{ secrets.ACTION_TOKEN }}
+                  git_username: npayfebot
+                  git_email: npay.fe.bot@navercorp.com
                   publish_script: pnpm release
-                  pr_title: ${{ inputs.pr_title }}
-                  commit_message: ${{ inputs.commit_message }}
-                  create_github_release_tag: ${{ inputs.create_github_release_tag }}
+                  pr_title: '🚀 version changed packages'
+                  commit_message: '📦 bump changed packages version'
+                  create_github_release_tag: true
                   formatting_script: pnpm run markdownlint:fix
               env:
-                  GITHUB_TOKEN: ${{ secrets.action_token }}
+                  GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
 
-            - name: Publish - Canary/RC
-              if: inputs.publish_type == 'canary' || inputs.publish_type == 'rc'
+            - name: Publish - Canary
+              if: github.event_name == 'issue_comment' && (github.event.comment.body == 'canary-publish' || github.event.comment.body == '/canary-publish')
               uses: NaverPayDev/changeset-actions/canary-publish@oidc
               with:
-                  github_token: ${{ secrets.action_token }}
-                  npm_tag: ${{ inputs.npm_tag }}
+                  github_token: ${{ secrets.ACTION_TOKEN }}
+                  npm_tag: canary
                   publish_script: pnpm run release:canary
-                  packages_dir: ${{ inputs.packages_dir }}
-                  excludes: ${{ inputs.excludes }}
-                  version_template: ${{ inputs.version_template }}
-                  create_release: ${{ inputs.create_release }}
+                  packages_dir: '.'
+                  excludes: '.turbo,.github'
+                  version_template: '{VERSION}-canary.{DATE}-{COMMITID7}'
+
+            - name: Publish - RC
+              if: github.event_name == 'issue_comment' && (github.event.comment.body == 'rc-publish' || github.event.comment.body == '/rc-publish')
+              uses: NaverPayDev/changeset-actions/canary-publish@oidc
+              with:
+                  github_token: ${{ secrets.ACTION_TOKEN }}
+                  npm_tag: rc
+                  publish_script: pnpm run release:canary
+                  packages_dir: '.'
+                  excludes: '.turbo,.github'
+                  version_template: '{VERSION}-rc.{DATE}-{COMMITID7}'
+                  create_release: true
