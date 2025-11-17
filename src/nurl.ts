@@ -275,7 +275,6 @@ export default class NURL implements URL {
 
     set hostname(value: string) {
         const encodedHostname = this.encodeHostname(value)
-
         this._hostname = encodedHostname
         this._host = this._port ? `${encodedHostname}:${this._port}` : encodedHostname
         this.updateHref()
