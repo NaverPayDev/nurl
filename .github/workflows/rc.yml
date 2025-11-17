@@ -46,7 +46,7 @@ jobs:
               with:
                   github_token: ${{ secrets.ACTION_TOKEN }} # Add user PAT if necessary
                   npm_tag: rc # Specify the npm tag to use for deployment
-                  npm_token: ${{ secrets.NPM_TOKEN }} # Provide the token required for npm publishing
+                  # npm_token: ${{ secrets.NPM_TOKEN }} # Provide the token required for npm publishing
                   publish_script: pnpm run release:canary # Script to execute Canary deployment
                   packages_dir: '.'
                   excludes: '.turbo,.github' # Files or directories to exclude from change detection
