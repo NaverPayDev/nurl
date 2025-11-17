@@ -1,0 +1,132 @@
+name: Publish Package
+
+on:
+    workflow_call:
+        inputs:
+            publish_type:
+                description: 'Type of publish (release, canary, rc)'
+                required: true
+                type: string
+            npm_tag:
+                description: 'NPM tag to use for publishing'
+                required: false
+                type: string
+                default: 'latest'
+            ref:
+                description: 'Git ref to checkout (branch, tag, or commit)'
+                required: false
+                type: string
+                default: ''
+            version_template:
+                description: 'Version template for canary/rc releases'
+                required: false
+                type: string
+                default: ''
+            create_release:
+                description: 'Whether to create GitHub release'
+                required: false
+                type: boolean
+                default: false
+            create_github_release_tag:
+                description: 'Whether to create GitHub release tag'
+                required: false
+                type: boolean
+                default: false
+            pr_title:
+                description: 'PR title for version updates'
+                required: false
+                type: string
+                default: '🚀 version changed packages'
+            commit_message:
+                description: 'Commit message for version updates'
+                required: false
+                type: string
+                default: '📦 bump changed packages version'
+            git_username:
+                description: 'Git username for commits'
+                required: false
+                type: string
+                default: 'github-actions[bot]'
+            git_email:
+                description: 'Git email for commits'
+                required: false
+                type: string
+                default: 'github-actions[bot]@users.noreply.github.com'
+            packages_dir:
+                description: 'Directory containing packages'
+                required: false
+                type: string
+                default: '.'
+            excludes:
+                description: 'Files or directories to exclude from change detection'
+                required: false
+                type: string
+                default: '.turbo,.github'
+        secrets:
+            action_token:
+                description: 'GitHub Action Token'
+                required: true
+
+permissions:
+    id-token: write
+    contents: write
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.ref || github.ref }}
+                  token: ${{ secrets.action_token }}
+                  fetch-depth: 0
+
+            - uses: pnpm/action-setup@v4
+
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'pnpm'
+
+            - name: Check and upgrade npm
+              run: |
+                  echo "Current npm version:"
+                  npm --version
+                  npm install -g npm@latest
+                  echo "Upgraded npm version:"
+                  npm --version
+
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build package
+              run: pnpm run build
+
+            - name: Publish - Release
+              if: inputs.publish_type == 'release'
+              uses: NaverPayDev/changeset-actions/publish@oidc
+              with:
+                  github_token: ${{ secrets.action_token }}
+                  git_username: ${{ inputs.git_username }}
+                  git_email: ${{ inputs.git_email }}
+                  publish_script: pnpm release
+                  pr_title: ${{ inputs.pr_title }}
+                  commit_message: ${{ inputs.commit_message }}
+                  create_github_release_tag: ${{ inputs.create_github_release_tag }}
+                  formatting_script: pnpm run markdownlint:fix
+              env:
+                  GITHUB_TOKEN: ${{ secrets.action_token }}
+
+            - name: Publish - Canary/RC
+              if: inputs.publish_type == 'canary' || inputs.publish_type == 'rc'
+              uses: NaverPayDev/changeset-actions/canary-publish@oidc
+              with:
+                  github_token: ${{ secrets.action_token }}
+                  npm_tag: ${{ inputs.npm_tag }}
+                  publish_script: pnpm run release:canary
+                  packages_dir: ${{ inputs.packages_dir }}
+                  excludes: ${{ inputs.excludes }}
+                  version_template: ${{ inputs.version_template }}
+                  create_release: ${{ inputs.create_release }}

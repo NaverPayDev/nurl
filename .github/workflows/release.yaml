@@ -5,47 +5,18 @@ on:
         branches:
             - main
 
-permissions:
-    id-token: write
-    contents: read
-
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
     release:
         name: Release
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v3
-              with:
-                  token: ${{ secrets.ACTION_TOKEN }}
-                  fetch-depth: 0
-
-            - uses: pnpm/action-setup@v4
-            - name: Use Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: '22'
-                  cache: 'pnpm'
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: build package
-              run: pnpm run build
-
-            - name: Create Release Pull Request
-              id: changesets
-              uses: NaverPayDev/changeset-actions/publish@oidc
-              with:
-                  github_token: ${{ secrets.ACTION_TOKEN }}
-                  git_username: npayfebot
-                  git_email: npay.fe.bot@navercorp.com
-                  publish_script: pnpm release
-                  pr_title: '🚀 version changed packages'
-                  commit_message: '📦 bump changed packages version'
-                  create_github_release_tag: true
-                  formatting_script: pnpm run markdownlint:fix
-                  # npm_token: ${{ secrets.NPM_TOKEN }}
-              env:
-                  GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+        uses: ./.github/workflows/publish.yaml
+        with:
+            publish_type: release
+            git_username: npayfebot
+            git_email: npay.fe.bot@navercorp.com
+            pr_title: '🚀 version changed packages'
+            commit_message: '📦 bump changed packages version'
+            create_github_release_tag: true
+        secrets:
+            action_token: ${{ secrets.ACTION_TOKEN }}
