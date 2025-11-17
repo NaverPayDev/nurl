@@ -46,7 +46,7 @@ const floor: (x: number) => number = Math.floor
 const stringFromCharCode: (...codes: number[]) => string = String.fromCharCode
 
 /**
- * A generic error utility function.
+ * A generic error utility functions.
  * @private
  * @param {string} type The error type.
  * @throws {RangeError} with the applicable error message.
