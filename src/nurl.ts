@@ -8,6 +8,7 @@ import {
     refineQueryWithPathname,
     convertQueryToArray,
     Query,
+    getPathStructure,
 } from './utils'
 
 interface URLOptions
@@ -31,7 +32,7 @@ interface URLOptions
     basePath?: string
 }
 
-interface MaskOptions {
+export interface MaskOptions {
     patterns: string[]
     sensitiveParams: string[]
     maskChar?: string
@@ -514,7 +515,8 @@ export default class NURL implements URL {
         url: string,
         {patterns, sensitiveParams, maskChar = '*', maskLength = 4, preserveLength = false}: MaskOptions,
     ) {
-        for (const pattern of patterns) {
+        const sortedPatterns = patterns.sort((a, b) => (getPathStructure(b) > getPathStructure(a) ? 1 : -1))
+        for (const pattern of sortedPatterns) {
             const urlObj = NURL.create(url)
             const matchedParams = NURL.match(urlObj.pathname, pattern)
             if (!matchedParams) {

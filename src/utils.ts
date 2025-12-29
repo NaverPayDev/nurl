@@ -79,3 +79,18 @@ export function convertQueryToArray(query: Query): string[][] {
         return []
     })
 }
+
+/**
+ * Get path structure, dynamic paths are represented as '1' and static paths as '2'.
+ *
+ * @param {string} pathname
+ * @returns {number} path structure
+ *
+ * @example /user/:id/profile -> 212
+ * @example /user/admin/:tab -> 221
+ */
+export function getPathStructure(pathname: string): string {
+    const segments = pathname.split('/').filter(Boolean)
+
+    return segments.map((segment) => (isDynamicPath(segment) ? '1' : '2')).join('')
+}
