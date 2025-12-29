@@ -31,6 +31,14 @@ interface URLOptions
     basePath?: string
 }
 
+interface MaskOptions {
+    patterns: string[]
+    sensitiveParams: string[]
+    maskChar?: string
+    maskLength?: number
+    preserveLength?: boolean
+}
+
 export default class NURL implements URL {
     private _href: string = ''
     private _protocol: string = ''
@@ -500,5 +508,30 @@ export default class NURL implements URL {
         }
 
         return params
+    }
+
+    static mask(
+        url: string,
+        {patterns, sensitiveParams, maskChar = '*', maskLength = 4, preserveLength = false}: MaskOptions,
+    ) {
+        for (const pattern of patterns) {
+            const urlObj = NURL.create(url)
+            const matchedParams = NURL.match(urlObj.pathname, pattern)
+            if (!matchedParams) {
+                continue
+            }
+            sensitiveParams.forEach((sensitiveParam) => {
+                if (sensitiveParam in matchedParams) {
+                    const originalValue = matchedParams[sensitiveParam]
+                    const lengthToMask = preserveLength ? originalValue.length : maskLength
+                    matchedParams[sensitiveParam] = maskChar.repeat(lengthToMask)
+                }
+            })
+
+            urlObj.pathname = refinePathnameWithQuery(pattern, matchedParams)
+            return urlObj.toString()
+        }
+
+        return url
     }
 }
