@@ -484,6 +484,44 @@ describe('NURL', () => {
                 expect(NURL.canParse(input)).toBe(expected)
             })
         })
+
+        describe('NURL.match', () => {
+            test.each([
+                ['/v1/user/12345/info', '/v1/user/:userId/info', {userId: '12345'}],
+                ['/v1/user/12345/info', '/v1/user/[userId]/info', {userId: '12345'}],
+                ['/v1/user/12345/info', '/v1/user/:123test/info', {'123test': '12345'}],
+                ['/v1/user/12345/info', '/v1/user/[한글]/info', {한글: '12345'}],
+                [
+                    '/v1/friends/SENDMONEY/block/111/222',
+                    '/v1/friends/:serviceCode/block/[nidNo]/:friendNidNo',
+                    {serviceCode: 'SENDMONEY', nidNo: '111', friendNidNo: '222'},
+                ],
+                [
+                    '/articles/2023/08/15/my-article',
+                    '/articles/:year/:month/:day/[title]',
+                    {year: '2023', month: '08', day: '15', title: 'my-article'},
+                ],
+                [
+                    'https://files/documents/report.pdf',
+                    'https://files/:folder/[filename]',
+                    {folder: 'documents', filename: 'report.pdf'},
+                ],
+                ['/example.com/example/path/1234?q1=123&q2=aaa#hash', '/example.com/example/path/:id', {id: '1234'}],
+            ])('should match %s with pattern %s to extract %o', (url, pattern, expected) => {
+                const result = NURL.match(url, pattern)
+                expect(result).toEqual(expected)
+            })
+
+            test('should return null when there is no match', () => {
+                const result = NURL.match('/v1/user/12345/info', '/v1/admin/:adminId/dashboard')
+                expect(result).toBeNull()
+            })
+
+            test('should return empty object when there are no dynamic segments', () => {
+                const result = NURL.match('/no/dynamic/segments', '/no/dynamic/segments')
+                expect(result).toEqual({})
+            })
+        })
     })
 
     describe('Extended functionality', () => {
