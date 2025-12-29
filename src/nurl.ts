@@ -472,4 +472,33 @@ export default class NURL implements URL {
             .map((segment) => decode(segment.replace(this.punycodePrefix, '')))
             .join('.')
     }
+
+    static match(url: string, pattern: string) {
+        if (!NURL.canParse(url) || !NURL.canParse(pattern)) {
+            return null
+        }
+
+        const urlSegments = url.split(/[?#]/)[0]?.split('/').filter(Boolean) || []
+        const patternSegments = pattern.split('/').filter(Boolean)
+
+        if (urlSegments.length !== patternSegments.length) {
+            return null
+        }
+
+        const params: Record<string, string> = {}
+
+        for (let i = 0; i < patternSegments.length; i++) {
+            const patternSegment = patternSegments[i]
+            const urlSegment = urlSegments[i]
+
+            if (isDynamicPath(patternSegment)) {
+                const pathKey = extractPathKey(patternSegment)
+                params[pathKey] = urlSegment
+            } else if (patternSegment !== urlSegment) {
+                return null
+            }
+        }
+
+        return params
+    }
 }
