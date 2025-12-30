@@ -16,6 +16,16 @@
                 "default": "./dist/cjs/index.js"
             }
         },
+        "./utils": {
+            "import": {
+                "types": "./dist/esm/utils.d.mts",
+                "default": "./dist/esm/utils/index.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/utils.d.ts",
+                "default": "./dist/cjs/utils/index.js"
+            }
+        },
         "./package.json": "./package.json"
     },
     "files": [
