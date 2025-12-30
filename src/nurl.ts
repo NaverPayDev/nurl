@@ -515,7 +515,7 @@ export default class NURL implements URL {
         url: string,
         {patterns, sensitiveParams, maskChar = '*', maskLength = 4, preserveLength = false}: MaskOptions,
     ) {
-        const sortedPatterns = patterns.sort((a, b) => (getPathStructure(b) > getPathStructure(a) ? 1 : -1))
+        const sortedPatterns = [...patterns].sort((a, b) => (getPathStructure(b) > getPathStructure(a) ? 1 : -1))
         for (const pattern of sortedPatterns) {
             const urlObj = NURL.create(url)
             const matchedParams = NURL.match(urlObj.pathname, pattern)
