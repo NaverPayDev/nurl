@@ -79,3 +79,19 @@ export function convertQueryToArray(query: Query): string[][] {
         return []
     })
 }
+
+/**
+ * Get path priority representation, dynamic paths are represented as '1' and static paths as '2'.
+ * Used for matching the most specific route.
+ *
+ * @param {string} pathname
+ * @returns {string} path priority representation
+ *
+ * @example /user/:id/profile -> 212
+ * @example /user/admin/:tab -> 221
+ */
+export function getPathPriority(pathname: string): string {
+    const segments = pathname.split('/').filter(Boolean)
+
+    return segments.map((segment) => (isDynamicPath(segment) ? '1' : '2')).join('')
+}
