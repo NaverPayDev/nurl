@@ -1,5 +1,4 @@
 import {decode, encode} from './punycode'
-import {mask, MaskOptions, match as matchUrlPattern} from './utils'
 import {
     extractPathKey,
     getDynamicPaths,
@@ -9,7 +8,10 @@ import {
     refineQueryWithPathname,
     convertQueryToArray,
     Query,
-} from './utils/internal'
+    match as matchUrlPattern,
+    mask,
+    MaskOptions,
+} from './utils'
 
 interface URLOptions
     extends Partial<

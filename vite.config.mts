@@ -9,7 +9,7 @@ export default createViteConfig({
     cwd: __dirname,
     entry: {
         index: './src/index.ts',
-        utils: './src/utils/index.ts',
+        utils: './src/utils.ts',
     },
     outputs: [
         {format: 'es', dist: 'dist/esm'},
