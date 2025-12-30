@@ -507,6 +507,7 @@ describe('NURL', () => {
                     {folder: 'documents', filename: 'report.pdf'},
                 ],
                 ['/example.com/example/path/1234?q1=123&q2=aaa#hash', '/example.com/example/path/:id', {id: '1234'}],
+                ['/example.com/example/path/1234', '/example.com/example/path/:id?q1=123&q2=aaa#hash', {id: '1234'}],
             ])('should match %s with pattern %s to extract %o', (url, pattern, expected) => {
                 const result = NURL.match(url, pattern)
                 expect(result).toEqual(expected)

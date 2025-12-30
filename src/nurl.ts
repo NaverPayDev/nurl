@@ -488,7 +488,7 @@ export default class NURL implements URL {
         }
 
         const urlSegments = url.split(/[?#]/)[0]?.split('/').filter(Boolean) || []
-        const patternSegments = pattern.split('/').filter(Boolean)
+        const patternSegments = pattern.split(/[?#]/)[0]?.split('/').filter(Boolean) || []
 
         if (urlSegments.length !== patternSegments.length) {
             return null
