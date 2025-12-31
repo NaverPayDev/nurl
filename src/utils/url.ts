@@ -1,4 +1,4 @@
-import NURL from './nurl'
+import NURL from '../nurl'
 
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
@@ -89,8 +89,8 @@ export function convertQueryToArray(query: Query): string[][] {
  * @param {string} pathname
  * @returns {string} path priority representation
  *
- * @example /user/:id/profile -> 212
- * @example /user/admin/:tab -> 221
+ * @example getPathPriority('/user/:id/profile') -> '212'
+ * @example getPathPriority('/user/admin/:tab') -> '221'
  */
 export function getPathPriority(pathname: string): string {
     const segments = pathname.split('/').filter(Boolean)
