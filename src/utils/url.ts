@@ -98,6 +98,12 @@ export function getPathPriority(pathname: string): string {
     return segments.map((segment) => (isDynamicPath(segment) ? '1' : '2')).join('')
 }
 
+/**
+ * Match a URL against a pattern and extract dynamic parameters.
+ * @param {string} url - The URL to match.
+ * @param {string} pattern - The pattern to match against.
+ * @returns {Record<string, string> | null} - An object containing the extracted parameters or null if no match.
+ */
 export const match = (url: string, pattern: string): Record<string, string> | null => {
     if (!NURL.canParse(url) || !NURL.canParse(pattern)) {
         return null
@@ -128,13 +134,24 @@ export const match = (url: string, pattern: string): Record<string, string> | nu
 }
 
 export interface MaskOptions {
+    /** Patterns to match against the URL pathname */
     patterns: string[]
+    /** Sensitive parameters to mask */
     sensitiveParams: string[]
+    /** Character used for masking (default: '*') */
     maskChar?: string
+    /** Length of the mask (default: 4) */
     maskLength?: number
+    /** Whether to preserve the length of the sensitive value when masking (default: false) */
     preserveLength?: boolean
 }
 
+/**
+ * Masks sensitive parameters in a URL based on provided options.
+ * @param {string} url - The URL to mask.
+ * @param {MaskOptions} options - The masking options.
+ * @returns {string} - The masked URL.
+ */
 export const mask = (
     url: string,
     {patterns, sensitiveParams, maskChar = '*', maskLength = 4, preserveLength = false}: MaskOptions,
