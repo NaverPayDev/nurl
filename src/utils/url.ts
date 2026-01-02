@@ -1,3 +1,5 @@
+import NURL from '../nurl'
+
 const DYNAMIC_PATH_COLON_REGEXP = /^:/
 const DYNAMIC_PATH_BRACKETS_REGEXP = /^\[.*\]$/
 
@@ -87,11 +89,91 @@ export function convertQueryToArray(query: Query): string[][] {
  * @param {string} pathname
  * @returns {string} path priority representation
  *
- * @example /user/:id/profile -> 212
- * @example /user/admin/:tab -> 221
+ * @example getPathPriority('/user/:id/profile') -> '212'
+ * @example getPathPriority('/user/admin/:tab') -> '221'
  */
 export function getPathPriority(pathname: string): string {
     const segments = pathname.split('/').filter(Boolean)
 
     return segments.map((segment) => (isDynamicPath(segment) ? '1' : '2')).join('')
+}
+
+/**
+ * Match a URL against a pattern and extract dynamic parameters.
+ * @param {string} url - The URL to match.
+ * @param {string} pattern - The pattern to match against.
+ * @returns {Record<string, string> | null} - An object containing the extracted parameters or null if no match.
+ */
+export const match = (url: string, pattern: string): Record<string, string> | null => {
+    if (!NURL.canParse(url) || !NURL.canParse(pattern)) {
+        return null
+    }
+
+    const urlSegments = url.split(/[?#]/)[0]?.split('/').filter(Boolean) || []
+    const patternSegments = pattern.split(/[?#]/)[0]?.split('/').filter(Boolean) || []
+
+    if (urlSegments.length !== patternSegments.length) {
+        return null
+    }
+
+    const params: Record<string, string> = {}
+
+    for (let i = 0; i < patternSegments.length; i++) {
+        const patternSegment = patternSegments[i]
+        const urlSegment = urlSegments[i]
+
+        if (isDynamicPath(patternSegment)) {
+            const pathKey = extractPathKey(patternSegment)
+            params[pathKey] = urlSegment
+        } else if (patternSegment !== urlSegment) {
+            return null
+        }
+    }
+
+    return params
+}
+
+export interface MaskOptions {
+    /** Patterns to match against the URL pathname */
+    patterns: string[]
+    /** Sensitive parameters to mask */
+    sensitiveParams: string[]
+    /** Character used for masking (default: '*') */
+    maskChar?: string
+    /** Length of the mask (default: 4) */
+    maskLength?: number
+    /** Whether to preserve the length of the sensitive value when masking (default: false) */
+    preserveLength?: boolean
+}
+
+/**
+ * Masks sensitive parameters in a URL based on provided options.
+ * @param {string} url - The URL to mask.
+ * @param {MaskOptions} options - The masking options.
+ * @returns {string} - The masked URL.
+ */
+export const mask = (
+    url: string,
+    {patterns, sensitiveParams, maskChar = '*', maskLength = 4, preserveLength = false}: MaskOptions,
+) => {
+    const sortedPatterns = [...patterns].sort((a, b) => (getPathPriority(b) > getPathPriority(a) ? 1 : -1))
+    for (const pattern of sortedPatterns) {
+        const urlObj = NURL.create(url)
+        const matchedParams = match(urlObj.pathname, pattern)
+        if (!matchedParams) {
+            continue
+        }
+        sensitiveParams.forEach((sensitiveParam) => {
+            if (sensitiveParam in matchedParams) {
+                const originalValue = matchedParams[sensitiveParam]
+                const lengthToMask = preserveLength ? originalValue.length : maskLength
+                matchedParams[sensitiveParam] = maskChar.repeat(lengthToMask)
+            }
+        })
+
+        urlObj.pathname = refinePathnameWithQuery(pattern, matchedParams)
+        return urlObj.toString()
+    }
+
+    return url
 }
