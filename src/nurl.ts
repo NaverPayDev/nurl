@@ -8,6 +8,9 @@ import {
     refineQueryWithPathname,
     convertQueryToArray,
     Query,
+    match as matchUrlPattern,
+    mask,
+    MaskOptions,
 } from './utils'
 
 interface URLOptions
@@ -471,5 +474,13 @@ export default class NURL implements URL {
             .split('.')
             .map((segment) => decode(segment.replace(this.punycodePrefix, '')))
             .join('.')
+    }
+
+    static match(url: string, pattern: string) {
+        return matchUrlPattern(url, pattern)
+    }
+
+    static mask(url: string, options: MaskOptions) {
+        return mask(url, options)
     }
 }

@@ -1,6 +1,6 @@
 import {describe, test, expect} from 'vitest'
 
-import NURL from './nurl'
+import NURL, {MaskOptions} from './nurl'
 
 const compareNurlWithUrl = ({url, nurl}: {url: URL; nurl: NURL}) => {
     expect(nurl.toString()).toBe(url.toString())
@@ -482,6 +482,139 @@ describe('NURL', () => {
                 ['', false],
             ])('should return %p for %s', (input, expected) => {
                 expect(NURL.canParse(input)).toBe(expected)
+            })
+        })
+
+        describe('NURL.match', () => {
+            test.each([
+                ['/v1/user/12345/info', '/v1/user/:userId/info', {userId: '12345'}],
+                ['/v1/user/12345/info', '/v1/user/[userId]/info', {userId: '12345'}],
+                ['/v1/user/12345/info', '/v1/user/:123test/info', {'123test': '12345'}],
+                ['/v1/user/12345/info', '/v1/user/[한글]/info', {한글: '12345'}],
+                [
+                    '/v1/friends/SENDMONEY/block/111/222',
+                    '/v1/friends/:serviceCode/block/[nidNo]/:friendNidNo',
+                    {serviceCode: 'SENDMONEY', nidNo: '111', friendNidNo: '222'},
+                ],
+                [
+                    '/articles/2023/08/15/my-article',
+                    '/articles/:year/:month/:day/[title]',
+                    {year: '2023', month: '08', day: '15', title: 'my-article'},
+                ],
+                [
+                    'https://files/documents/report.pdf',
+                    'https://files/:folder/[filename]',
+                    {folder: 'documents', filename: 'report.pdf'},
+                ],
+                ['/example.com/example/path/1234?q1=123&q2=aaa#hash', '/example.com/example/path/:id', {id: '1234'}],
+                ['/example.com/example/path/1234', '/example.com/example/path/:id?q1=123&q2=aaa#hash', {id: '1234'}],
+            ])('should match %s with pattern %s to extract %o', (url, pattern, expected) => {
+                const result = NURL.match(url, pattern)
+                expect(result).toEqual(expected)
+            })
+
+            test('should return null when there is no match', () => {
+                const result = NURL.match('/v1/user/12345/info', '/v1/admin/:adminId/dashboard')
+                expect(result).toBeNull()
+            })
+
+            test('should return empty object when there are no dynamic segments', () => {
+                const result = NURL.match('/no/dynamic/segments', '/no/dynamic/segments')
+                expect(result).toEqual({})
+            })
+        })
+
+        describe('NURL.mask', () => {
+            const friendApiPathPatterns = [
+                '/v1/friends/:serviceCode/:friendNo',
+                '/v1/friends/:friendNidNo',
+                '/v1/friends/:serviceCode/favorite',
+                '/v1/friends/close-friends',
+            ]
+            const friendApiSensitiveParams = ['friendNo', 'friendNidNo']
+
+            test.each([
+                [
+                    '/v1/user/12345/info',
+                    {patterns: ['/v1/user/:userId/info'], sensitiveParams: ['userId']},
+                    '/v1/user/****/info',
+                ],
+                [
+                    '/v1/user/12345/info',
+                    {patterns: ['/v1/user/[userId]/info'], sensitiveParams: ['userId'], maskChar: 'X', maskLength: 6},
+                    '/v1/user/XXXXXX/info',
+                ],
+                [
+                    '/v1/user/12345/info',
+                    {patterns: ['/v1/user/:userId/info'], sensitiveParams: ['userId'], preserveLength: true},
+                    '/v1/user/*****/info',
+                ],
+                [
+                    '/v1/friends/SENDMONEY/block/12345/67890',
+                    {
+                        patterns: ['/v1/friends/:serviceCode/block/:nidNo/:friendNidNo'],
+                        sensitiveParams: ['nidNo', 'friendNidNo'],
+                        preserveLength: true,
+                    },
+                    '/v1/friends/SENDMONEY/block/*****/*****',
+                ],
+                [
+                    'https://example.com/v1/friends/SENDMONEY/block/12345/67890?q=test#section',
+                    {
+                        patterns: ['/v1/friends/:serviceCode/block/:nidNo/:friendNidNo'],
+                        sensitiveParams: ['nidNo', 'friendNidNo'],
+                        preserveLength: true,
+                    },
+                    'https://example.com/v1/friends/SENDMONEY/block/*****/*****?q=test#section',
+                ],
+                [
+                    '/v1/friends/12345678',
+                    {
+                        patterns: friendApiPathPatterns,
+                        sensitiveParams: friendApiSensitiveParams,
+                        preserveLength: true,
+                    },
+                    '/v1/friends/********',
+                ],
+                [
+                    '/v1/friends/close-friends',
+                    {
+                        patterns: friendApiPathPatterns,
+                        sensitiveParams: friendApiSensitiveParams,
+                        preserveLength: true,
+                    },
+                    '/v1/friends/close-friends',
+                ],
+                [
+                    '/v1/friends/SENDMONEY/favorite',
+                    {
+                        patterns: friendApiPathPatterns,
+                        sensitiveParams: friendApiSensitiveParams,
+                        preserveLength: true,
+                    },
+                    '/v1/friends/SENDMONEY/favorite',
+                ],
+                [
+                    '/v1/friends/SENDMONEY/12345',
+                    {
+                        patterns: friendApiPathPatterns,
+                        sensitiveParams: friendApiSensitiveParams,
+                        preserveLength: true,
+                    },
+                    '/v1/friends/SENDMONEY/*****',
+                ],
+                [
+                    '/user/admin/profile',
+                    {
+                        patterns: ['/user/:id/profile', '/user/admin/:tab'],
+                        sensitiveParams: ['id'],
+                        preserveLength: true,
+                    },
+                    '/user/admin/profile',
+                ],
+            ])('should mask %s with options %o to %s', (url, options: MaskOptions, expected) => {
+                const result = NURL.mask(url, options)
+                expect(result).toBe(expected)
             })
         })
     })

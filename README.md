@@ -25,7 +25,7 @@ NURL is a powerful URL manipulation library that extends the standard URL class.
 ### Basic Usage
 
 ```javascript
-import { NURL } from 'nurl'
+import {NURL} from 'nurl'
 
 // Create URL from string
 const url1 = new NURL('https://example.com/users/123?name=John')
@@ -36,9 +36,9 @@ const url2 = new NURL(standardUrl)
 
 // Create URL from custom options object
 const url3 = new NURL({
-  baseUrl: 'https://example.com',
-  pathname: '/users/:id',
-  query: { id: '123', name: 'John' }
+    baseUrl: 'https://example.com',
+    pathname: '/users/:id',
+    query: {id: '123', name: 'John'},
 })
 
 // Create empty URL
@@ -49,9 +49,9 @@ const url5 = NURL.create('https://example.com')
 
 // The factory function also works with options object
 const url6 = NURL.create({
-  baseUrl: 'https://example.com',
-  pathname: '/users/:id',
-  query: { id: '123', name: 'John' }
+    baseUrl: 'https://example.com',
+    pathname: '/users/:id',
+    query: {id: '123', name: 'John'},
 })
 ```
 
@@ -61,13 +61,13 @@ NURL processes dynamic segments in the pathname and replaces them with values fr
 
 ```javascript
 const url = new NURL({
-  baseUrl: 'https://api.example.com',
-  pathname: '/users/:a/posts/[b]/[c]',
-  query: {
-    a: '123',
-    b: '456',
-    format: 'json'
-  }
+    baseUrl: 'https://api.example.com',
+    pathname: '/users/:a/posts/[b]/[c]',
+    query: {
+        a: '123',
+        b: '456',
+        format: 'json',
+    },
 })
 
 console.log(url.href)
@@ -82,6 +82,59 @@ NURL automatically handles Internationalized Domain Names:
 const url = new NURL('https://한글.도메인')
 console.log(url.hostname) // xn--bj0bj06e.xn--hq1bm8jm9l
 console.log(url.decodedHostname) // 한글.도메인 (in human-readable format)
+```
+
+### URL Pattern Matching
+
+NURL supports `NURL.match(url, pattern)` static method to match a URL path against a pattern with dynamic segments:
+
+```tsx
+NURL.match('/v1/user/12345/info', '/v1/user/:userId/info')
+// → { userId: '12345' }
+
+NURL.match('/v1/friends/SENDMONEY/block/111/222', '/v1/friends/:serviceCode/block/:nidNo/:friendNidNo')
+// → { serviceCode: 'SENDMONEY', nidNo: '111', friendNidNo: '222' }
+
+NURL.match('/v1/user/12345', '/v1/admin/:id')
+// → null (no match)
+```
+
+### Masking Path Parameters
+
+NURL provides `NURL.mask(url, options)` static method to mask sensitive path parameters in a URL for logging purposes:
+
+```tsx
+// Default masking (**** with length 4)
+NURL.mask('/v1/user/12345/info', {
+    patterns: ['/v1/user/:userId/info'],
+    sensitiveParams: ['userId'],
+})
+// → '/v1/user/****/info'
+
+// Custom mask character and length
+NURL.mask('/v1/user/12345/info', {
+    patterns: ['/v1/user/[userId]/info'],
+    sensitiveParams: ['userId'],
+    maskChar: 'X',
+    maskLength: 6,
+})
+// → '/v1/user/XXXXXX/info'
+
+// Preserve original value length
+NURL.mask('/v1/user/12345/info', {
+    patterns: ['/v1/user/:userId/info'],
+    sensitiveParams: ['userId'],
+    preserveLength: true,
+})
+// → '/v1/user/*****/info' (5 chars, same as '12345')
+
+// Multiple sensitive params
+NURL.mask('/v1/friends/SENDMONEY/block/12345/67890', {
+    patterns: ['/v1/friends/:serviceCode/block/[nidNo]/:friendNidNo'],
+    sensitiveParams: ['nidNo', 'friendNidNo'],
+    preserveLength: true,
+})
+// → '/v1/friends/SENDMONEY/block/*****/*****' (5 and 5 chars)
 ```
 
 ## API
@@ -112,6 +165,23 @@ NURL inherits all properties from the standard URL class:
 
 - `toString()`: Returns the URL as a string
 - `toJSON()`: Returns the URL as a JSON representation
+
+### Static Methods
+
+- `NURL.create(input?: string | URL | URLOptions): NURL`
+  - Factory function to create a NURL instance without the `new` keyword.
+- `NURL.canParse(url: string): boolean`
+  - Checks if the given string can be parsed as a valid URL.
+- `NURL.match(url: string, pattern: string): Record<string, string> | null`
+  - Matches a URL path against a pattern with dynamic segments and returns an object with extracted parameters or `null` if no match.
+- `NURL.mask(url: string, options: MaskOptions): string`
+  - Masks sensitive path parameters in a URL based on the provided options.
+  - `MaskOptions`:
+    - `patterns: string[]`: Array of URL patterns with dynamic segments.
+    - `sensitiveParams: string[]`: Array of path parameters to be masked.
+    - `maskChar?: string`: Character used for masking (default: `'*'`).
+    - `maskLength?: number`: Length of the mask (default: `4`).
+    - `preserveLength?: boolean`: If true, mask length matches original value length (overrides `maskLength`).
 
 ## Important Notes
 
